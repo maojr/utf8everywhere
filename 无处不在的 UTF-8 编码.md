@@ -35,7 +35,7 @@
 
 ![image](https://github.com/Mjinrui/UTF-8Everywhere/blob/master/nagoya-museum.jpg)
 
-_名古屋科学博物馆     Vadim Zlotnik摄。_
+_名古屋科学博物馆           Vadim Zlotnik摄。_
 
 从那时起，微软就错误地将 Unicode 和宽字符（widechar）作为了 UCS-2 和 UTF-16 的同义词。而且，因为 UTF-8 不能
 被设置为窄字符串 WinAPI 的编码，人们必须用 UNICODE 编译代码。Windows C++ 程序员被教育 Unicode 必须和宽字符
