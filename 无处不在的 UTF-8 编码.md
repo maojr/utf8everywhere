@@ -33,7 +33,8 @@
 处理非16位的字符。这使得最初选用16位字符编码，也就是固定宽度编码的理论没有了依据。现在，Unicode 包含109449
 个字符，其中大约74500个属于中日韩（CJK）统一表意文字。
 
-![image](https://github.com/Mjinrui/UTF-8Everywhere/blob/master/nagoya-museum.jpg)
+               ![image](https://github.com/Mjinrui/UTF-8Everywhere/blob/master/nagoya-museum.jpg)
+
 从那时起，微软就错误地将 Unicode 和宽字符（widechar）作为了 UCS-2 和 UTF-16 的同义词。而且，因为 UTF-8 不能
 被设置为窄字符串 WinAPI 的编码，人们必须用 UNICODE 编译代码。Windows C++ 程序员被教育 Unicode 必须和宽字符
 一起使用。作为这些混乱的结果，他们现在关于正确处理文本最疑惑的人。
