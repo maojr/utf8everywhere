@@ -63,8 +63,12 @@ _名古屋科学博物馆           Vadim Zlotnik摄。_
 先，这个应用必须编译为 Unicode 感知的。在这个例子中，它不能有带有标准C参数的 Main() 函数。它之后将接受 UTF-16 编
 码的 argv。为了转化一个核心部分用窄文本写的 Windows 应用程序接收 Unicode 字符，它必须很深的重构并且认真处理每一个
 字符串变量。
-*  HKLM在 Windows 上，
-
+* 在 Windows 上，_HKLM\SYSTEM\CurrentControlSet\Control\Nls\CodePage\ACP_ 注册表键值使能够接受非 ASCII 字符，但是
+这些字符只能来自单个 ANSI 字符页。在 Windows 上一个未被实现的值65001将能够实现上面的那些。
+* 和 MSVC 一同发布的标准库没有被很好的应用。它直接将窄字符串转发到系统的 ANSI API。没有办法重写这些。改变 std::locale
+也无效。在 MSVC 上使用 C++ 的标准特性无法打开一个使用 Unicode 字符名称的文件。打开一个文件的标准方法是：
+       `std::fstream fout("abc.txt")`
+解决这个问题的方式是使用微软自身的技巧，去接受宽字符参数，但这不是标准的扩展。
 
 
 
