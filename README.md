@@ -139,6 +139,7 @@ _基本执行字符集_ 能够存储任何 Unicode 数据。然后，每个 std:
 * 也可以选择使用一组封装去隐藏转化。
 
 **转化函数**
+
 这份指南使用的转化函数来自 [Boost.Nowide library](http://cppcms.com/files/nowide/html/)(还不是 boost 的一部分)：
 ```
 std::string narrow(const wchar_t *s);
