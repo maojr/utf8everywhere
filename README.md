@@ -101,10 +101,28 @@ _基本执行字符集_ 能够存储任何 Unicode 数据。然后，每个 std:
 * toupper()和tolower()在和码元（code units）相关的时候也不应该被使用，因为它不支持在 Unicode 下工作。举例来说，拉丁连体
   字符 ffl 必须被转换成 FFL，德语 ß 必须被转化为 SS（有一个大写形式的ẞ，但是转化规则遵循传统的方式）。
 
+##5 在 Windows 上如何处理文本
+接下来是为了实现代码的编译时检查 Unicode 的正确性，简易性和更好的多平台性，我们给每个人的建议。这通常与在 Windows 上合适
+的使用 Unicode 的建议有显著的不同。但是，一个对这些建议的深度调查显示了相同的结论。正如下面：
+* 不要在任何地方使用 wchar_t 或 std::wstring，除非在和接受 UTF-16 的APIs的临近点。
+* 不要在任何地方使用 _T("") 或 L""修辞，除非用在接受 UTF-16 的APIs的参数上。
+* 不要使用对 UNICODE 常量敏感的类型，函数或者他们的衍生物，例如 LPTSTR 或者 CreateWindow()。
+* 但是为了避免传递给 Windows APIs的窄字符串被悄悄地编译，Unicode 和 _UNICODE 总是要被定义。
+* 程序中任何地点出现的 std::strings 和 char* 都被看做 UTF-8 （如果没做声明）；
+* 仅仅使用接受宽字符（LPWSTR）的 Win32 函数，绝不使用那些接受 LPTSTR 或 LPSTR 的函数。用这种方法传递参数：
+ 
+ `::SetWindowTextW(widen(someStdString or "string litteral").c_str())`
+   
+   (使用转换函数的策略在下面描述)
+* 处理 MFC 中的字符串：
+    ```
+    CString someoneElse; // something that arrived from MFC.
 
-
-
-
+    // Converted as soon as possible, before passing any further away from the API call:
+    std::string s = str(boost::format("Hello %s\n") % narrow(someoneElse));
+    AfxMessageBox(widen(s).c_str(), L"Error", MB_OK);
+    ```
+**在 Windows 上处理文件，文件名和字符流**
 
 
 
