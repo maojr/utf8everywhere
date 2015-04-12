@@ -122,7 +122,39 @@ _基本执行字符集_ 能够存储任何 Unicode 数据。然后，每个 std:
     std::string s = str(boost::format("Hello %s\n") % narrow(someoneElse));
     AfxMessageBox(widen(s).c_str(), L"Error", MB_OK);
     ```
+    
 **在 Windows 上处理文件，文件名和字符流**
+
+* 永远不要生成非 UTF-8 编码内容的输出文件。
+* 因为 [RAII/OOD](http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization) 的原因，使用 fopen()      
+  无论如何应该被避免。但是如果必要，按照上面描述的方式使用 _wfopen() 和 WinAPI。
+* 永远不要传递 std::string 和 const char* 文件名参数给 fstream 家族。MSVC CRT 不支持 UTF-8 参数，但是它有一个非
+  标准的扩展应该按下面的方式使用。
+* 使用 widen 将 std::string 参数转化为 std::wstring 
+
+  `std::ifstream ifs(widen("hello"),std::ios_base::binary):`
+
+  当 MSVC 对于 fstream 的态度变化的时候，我们将不得不手动去除该转换。
+* 该代码不是多平台的并且在将来也许会不得不手动改变。
+* 也可以选择使用一组封装去隐藏转化。
+
+**转化函数**
+这份指南使用的转化函数来自 [Boost.Nowide library](http://cppcms.com/files/nowide/html/)(还不是 boost 的一部分)：
+```
+std::string narrow(const wchar_t *s);
+std::wstring widen(const char *s);
+std::string narrow(const std::wstring &s);
+std::wstring widen(const std::string &s);
+```
+这个库也为处理文件和通过 iostreams 读写 UTF-8的方法的常用的 C 和 C++ 库函数提供了一组封装。
+
+使用 Windows 的 MultiByteToWideChar 和 WideCharToMultiByte 函数，这些函数和封装很容易实现。任何其它
+（也许更快的）转化方法也可以使用。
+
+
+
+
+
 
 
 
