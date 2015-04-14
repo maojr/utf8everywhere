@@ -286,7 +286,7 @@ XML，HTTP，系统路径和配置文件——他们几乎都使用独家的 ASC
 可以看出，UTF-16 在实际数据上占据的空间比 UTF-8 多 50%，对于纯亚洲文字仅仅节约 20% 的空间并且在用通用压缩算法处理
 后很难有竞争力。
 
-10.问：你如何看到字节顺序掩码？
+10.问：你如何看到字节顺序标记（Byte Order Marks）？
 
 答：根据 Unicode 标准（v6.2,p.30）:对于 UTF-8，既不要求也不建议使用 BOM 。
 
@@ -294,7 +294,7 @@ XML，HTTP，系统路径和配置文件——他们几乎都使用独家的 ASC
 如果将来 UTF-8 是唯一流行的编码（在互联网世界中已经是这样），BOM 就会变得冗余。实践中，大多数 UTF-8 文本文件已经
 省略了 BOMs。
 
-11.问：你如何看待行尾？
+11.问：你如何看待行尾 (line endings) ？
 
 答：所有的文件应该在二进制模式读和写，因为这保证了多平台性---- 在任何系统上，一个程序将总是会给出相同的输出。
 因为 C 和 C++ 标准使用 \n 作为内存行尾，这将导致所有文件用 POSIX 方式写入。当文件在 Windows 上用记事本打开的时候，
@@ -325,21 +325,33 @@ XML，HTTP，系统路径和配置文件——他们几乎都使用独家的 ASC
 系统的一个典型应用是打开文件，这个函数在我的机器上执行了（184±3）μs:
 
 >void f(const wchar_t* name)
+
 >{
+
 >    HANDLE f = CreateFile(name, GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+
 >    DWORD written;
+
 >   WriteFile(f, "Hello world!\n", 13, &written, 0);
+
 >   CloseHandle(f);
+
 >}
 
 而这个执行了（186±0.7）μs：
 
 >void f(const char* name)
+
 >{
+
 >    HANDLE f = CreateFile(widen(name).c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+
 >    DWORD written;
+
 >    WriteFile(f, "Hello world!\n", 13, &written, 0);
+
 >    CloseHandle(f);
+
 >}
 
 (在这两个情况中，都使用 name="D:\\a\\test\\subdir\\subsubdir\\this is the sub dir\\a.txt" 运行。平均运行超过了5次。我们使用
