@@ -408,11 +408,11 @@ Unicode 的。
 
 如果你是一个微软的员工，推动支持CP_UTF8 作为一个窄 API 代码页。
 
-##7 迷
+##7 迷题
 
-     _注意：如果你对 Unicode 术语不熟悉，请先阅读[这份问答](http://utf8everywhere.org/#faq.glossary)_
+_注意：如果你对 Unicode 术语不熟悉，请先阅读[这份问答](http://utf8everywhere.org/#faq.glossary)_
   
-     _注意：为了讨论的目的，字符串的索引也是一种字符计数_
+_注意：为了讨论的目的，字符串的索引也是一种字符计数_
   
 **使用 UTF-16，计算字符数量可以在一个常量时间内完成。**
 
