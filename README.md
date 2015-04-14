@@ -323,37 +323,25 @@ XML，HTTP，系统路径和配置文件——他们几乎都使用独家的 ASC
 小小的实验。
 
 系统的一个典型应用是打开文件，这个函数在我的机器上执行了（184±3）μs:
-
->void f(const wchar_t* name)
-
->{
-
->    HANDLE f = CreateFile(name, GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
-
->    DWORD written;
-
->   WriteFile(f, "Hello world!\n", 13, &written, 0);
-
->   CloseHandle(f);
-
->}
-
+```
+void f(const wchar_t* name)
+{
+    HANDLE f = CreateFile(name, GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+    DWORD written;
+   WriteFile(f, "Hello world!\n", 13, &written, 0);
+   CloseHandle(f);
+}
+```
 而这个执行了（186±0.7）μs：
-
->void f(const char* name)
-
->{
-
->    HANDLE f = CreateFile(widen(name).c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
-
->    DWORD written;
-
->    WriteFile(f, "Hello world!\n", 13, &written, 0);
-
->    CloseHandle(f);
-
->}
-
+```
+void f(const char* name)
+{
+    HANDLE f = CreateFile(widen(name).c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+    DWORD written;
+    WriteFile(f, "Hello world!\n", 13, &written, 0);
+    CloseHandle(f);
+}
+```
 (在这两个情况中，都使用 name="D:\\a\\test\\subdir\\subsubdir\\this is the sub dir\\a.txt" 运行。平均运行超过了5次。我们使用
 了一个优化过的依赖于 C++11中 std::string 临近存储的 widen 。)
 
