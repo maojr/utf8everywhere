@@ -285,3 +285,64 @@ XML，HTTP，系统路径和配置文件——他们几乎都使用独家的 ASC
 
 可以看出，UTF-16 在实际数据上占据的空间比 UTF-8 多 50%，对于纯亚洲文字仅仅节约 20% 的空间并且在用通用压缩算法处理
 后很难有竞争力。
+
+10.问：你如何看到字节顺序掩码？
+
+答：根据 Unicode 标准（v6.2,p.30）:对于 UTF-8，既不要求也不建议使用 BOM 。
+
+字节顺序也是避免使用 UTF-16 的另一个原因。UTF-8 没有端性问题，并且 UTF-8 BOM 存在只是为了表明这是一个 UTF-8 流。
+如果将来 UTF-8 是唯一流行的编码（在互联网世界中已经是这样），BOM 就会变得冗余。实践中，大多数 UTF-8 文本文件已经
+省略了 BOMs。
+
+11.问：你如何看待行尾？
+
+答：所有的文件应该在二进制模式读和写，因为这保证了多平台性---- 在任何系统上，一个程序将总是会给出相同的输出。
+因为 C 和 C++ 标准使用 \n 作为内存行尾，这将导致所有文件用 POSIX 方式写入。当文件在 Windows 上用记事本打开的时候，
+这将会导致问题；但是，任何像样的文本阅读器都理解这样的行尾。
+
+12.问：那文本处理算法的性能，字节对齐这些问题呢？
+
+答：使用 UTF-16 真的更好吗？也许是这样。ICU 因为历史的原因使用 UTF-16,因此很难去衡量。然而，大多数字符串被看做 cookies,
+每再用的时候既不排序也不反转。更小的字符编码也许更有利于性能。
+
+13.问：UTF-8 仅仅是一个尝试兼容 ASCII 的一个尝试吗？为什么保持这个 fossil?
+
+答：也许是这样的。现在，它是一个比其它任何都优秀和流行的 Unicode 编码。
+
+14.问：人们经常误用 UTf-16，认为它每个字符占据 16 个字节,这真的是它的过错吗？
+
+答：不是，但是安全性是每一种设计的重要特性。
+
+15.问：如果 std::string 表示 UTF-8，那不会和在 std::strings 中存储纯文本的代码弄混吗？
+
+答：根本没有叫做纯文本的东西，根本没有任何理由在一个叫 string 的类中只保存 ANSI 代码页或者仅含 ASCII 字符的文本。
+
+16.问：当向窗口传递字符串的时候，UTF-8 和 UTF-16 编码之间的转换不会使我的程序变慢吗？
+
+答：首先，无论怎样你都要做一些转换。无论是调用系统调用，还是和外界交流。即使在你的程序中你和系统的交互更频繁，这里有一个
+小小的实验。
+
+系统的一个典型应用是打开文件，这个函数在我的机器上执行了（184±3）μs:
+
+>void f(const wchar_t* name)
+>{
+>    HANDLE f = CreateFile(name, GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+>    DWORD written;
+>   WriteFile(f, "Hello world!\n", 13, &written, 0);
+>   CloseHandle(f);
+>}
+
+而这个执行了（186±0.7）μs：
+
+>void f(const char* name)
+>{
+>    HANDLE f = CreateFile(widen(name).c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+>    DWORD written;
+>    WriteFile(f, "Hello world!\n", 13, &written, 0);
+>    CloseHandle(f);
+>}
+
+(在这两个情况中，都使用 name="D:\\a\\test\\subdir\\subsubdir\\this is the sub dir\\a.txt" 运行。平均运行超过了5次。我们使用
+了一个优化过的依赖于 C++11中 std::string 临近存储的 widen 。)
+
+这仅仅多了（1±2）%。此外，MultiByteToWideChar 肯定不是最理想的。有更好的 UTF-8 ↔ UTF-16 转换函数存在。
