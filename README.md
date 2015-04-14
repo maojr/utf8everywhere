@@ -1,4 +1,4 @@
-#无处不在的 UTF-8 宣言
+#UTF-8 无处不在宣言
 
 
 ##1 这份文档的目的
@@ -263,7 +263,7 @@ U+0301 COMBINING ACUTE ACCENT> 序列编码。
 将数用户察觉的字符。当一个程序员去数字符的数量，根据他的技能层次，他会数码元，码点或 grapheme 聚簇的数量。如果对
 字符串 '🐨’，一个库返回一个不是 0 的值，那么这个库不支持 Unicode ，正如人们总结，所有这些都是疑惑的来源，。 
 
-9. 问：为什么亚洲人放弃平均每个字符节省他们将近 50% 内存的 UTF-16 编码？
+9.问：为什么亚洲人放弃平均每个字符节省他们将近 50% 内存的 UTF-16 编码？
 
 答：只有在人为构建的仅包含 U+0800 到 U+FFFF 范围内字符的例子中才是这样。然而，电脑和电脑文本接口包含其他部分。这包含
 XML，HTTP，系统路径和配置文件——他们几乎都使用独家的 ASCII 字符，并且事实上在那些国家 UTF-8 使用的同样多。
@@ -408,7 +408,80 @@ Unicode 的。
 
 如果你是一个微软的员工，推动支持CP_UTF8 作为一个窄 API 代码页。
 
+##7 迷
 
+     _注意：如果你对 Unicode 术语不熟悉，请先阅读[这份问答](http://utf8everywhere.org/#faq.glossary)_
+  
+     _注意：为了讨论的目的，字符串的索引也是一种字符计数_
+  
+**使用 UTF-16，计算字符数量可以在一个常量时间内完成。**
 
+这是那些认为 UTF-16 是一个固定宽度编码的人的一个共有错误。不是这样的，事实上 UTF-16 是做一个变长编码。如果你依然否认 
+非 BMP 字符的存在，参考[这个问答](http://utf8everywhere.org/#faq.almostfw)。
 
+许多人通过换编码的方式修正这个结论，并且得出了下面的结论：
 
+**使用 UTF-32，计算字符数量可以在一个常量时间内完成。**
+
+现在，这个结论的正确性取决于含糊和有多重含义的词语 ‘字符’。唯一能让这个声明正确的替换是和 UTF-32 一致的‘码元’和‘码点’。然而，
+码点并不是字符，既不是根据 Unicode 也不是根据终端用户。他们中的一些事非字符。虽然这些不应该被交换。所以，假设我们能够保证字符
+串不包含非字符，每个码点应该能够代表一个单独的编码字符，然后我们就可以对他们计数。
+
+但是，它是一个重要的实现吗？为什么要有上面的担心？
+
+**给已编码字符或者码点计数是重要的**
+
+码点的重要性经常被夸大。这是由于对仅仅反映人类语言复杂性的 Unicode 的复杂度的误解。可以很容易说出在 'Abracadabra' 
+中有多少个字符，但是说出下面的字符串却并不那么简单：
+
+                                Приве́т नमस्ते שָׁלוֹם
+                                
+上面的字符串包含 22(!) 码点，但仅仅有 16 个象形族。所以，‘Abracadabra’ 包含 11 个码点，上面的字符串包含 22 个码点，如果转换
+为 [NFC](http://unicode.org/reports/tr15/) 则进一步仅有 20 个码点。然而，码点的数量和几乎与任何软件工程问题无关，唯一的例外
+是将字符串转为 UTF-32。举个例子：
+
+* 对于光标移动，文本选择，象形族将会被使用。
+* 对于在输入领域，文本格式，协议和数据库上限制字符串长度的情况，长度是根据提前指定的编码的码元测算出来的。原因是任何长度限制
+  是来源于在低层次给字符串分配的固定量的内存，在内存中，磁盘中或者在一个特定的数据结构中。
+* 字符串在屏幕上显示的大小和字符串中码点的数量无关。这不得不与渲染引擎沟通。码点不占据一列即使在终端和等宽字体中。POSIX 考虑
+  到了这个。
+
+可以参考：[推特如何计算字符数量](https://dev.twitter.com/docs/counting-characters)。
+
+**在 NFC 中，每个码点对应一个用户可查的字符**
+
+不，因为可以在 Unicode 中表示的用户可见字符的数量是无限的。即使在实践中，大多数字符并没有一个完全组成的形式。举个例子，上面例
+子中的包含三个真实语言的三个真实词语的 NFD 字符串将在 NFC 中包含 20 个码点。这远比它包含的 16 个可见字符多。
+
+**length() 字符串操作一定计算用户可见字符或者已编码字符的数量。如果不是，它就没能正确地支持 Unicode。**
+
+库和编程语言对 Unicode 的支持经常通过返回字符串长度操作的值来判断。根据对 Unicode 支持的测试，大多数流行的语言，例如 C#,Java
+甚至连ICU 都不支持 Unicode。举个例子，一个字符串 ‘🐨’的长度在UTF-16 作为内部字符串表示的地方经常被报告为2，在内部使用UTF-8的
+语言中则是 4。误解的来源是这些语言的说明中使用字符表示一个码元，尽管程序员希望它是其它的东西。
+
+##8 关于作者
+[Pavel Radzivilovsky](http://stackoverflow.com/users/73656/pavel-radzivilovsky),[Yakov Galka](http://stannum.co.il/about)和
+[Slava Novgorodov](http://slavanov.com/)写下的这份宣言。这是我们经验和对现实世界中 Unicode 的问题和现实中程序员犯的错误的
+调查的结果。目标是提高对文本问题的意识并启发工业范围内的变革，使得支持Unicode 
+编程更加容易，最终提升使用人类工程师写的那些程序的用户的体验。我们中的任何人都没有参与到 Unicode 委员会。特别感谢 Glenn 
+Linderman 提供关于 Python 的信息。
+
+许多文本来自于 Boost.Locale 的作者 [Artyom Beilis 在 StackOverflow 上发起的讨论](http://programmers.stackexchange.com/questions/102205/should-utf-16-be-considered-harmful)。你可以在那里评论
+或者反馈。另外的启发来自 [VisionMap](http://www.visionmap.com/) 的发展会议和 Micheal Hartl的 
+[tauday.org](http://tauday.com/tau-manifesto)。
+
+##9 外部链接
+* [Unicode 委员会](http://www.unicode.org/)(Unicode 标准，[PDF](http://www.unicode.org/versions/Unicode6.2.0/UnicodeStandard-6.2.pdf))
+* [Unicode 国际组成部分](http://site.icu-project.org/)(ICU)
+* [Joel On Unicode](http://www.joelonsoftware.com/articles/Unicode.html)——‘The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets’
+* [Boost.Locale](http://cppcms.sourceforge.net/boost_locale/html/)—— C++实现的高质量本地化工具
+* [Should UTF-16 be considered harmful](http://programmers.stackexchange.com/questions/102205/should-utf-16-be-considered-harmful)Artyom Beilis 在 StackOverflow 上发起的讨论。
+* [How twitter counts characters](https://dev.twitter.com/docs/counting-characters)
+
+##10 非常感谢你的帮助和反馈
+
+                                    ![]()
+
+比特币捐赠到：1UTF8gQmvChQ4MwUHT6XmydjUt9TsuDRn
+
+该款项将会用于研究和推广。
