@@ -480,7 +480,7 @@ Linderman 提供关于 Python 的信息。
 
 ##10 非常感谢你的帮助和反馈
 
-                                    ![](https://github.com/Mjinrui/UTF-8Everywhere/blob/master/utf8donate.png)
+![](https://github.com/Mjinrui/UTF-8Everywhere/blob/master/utf8donate.png)
 
 比特币捐赠到：1UTF8gQmvChQ4MwUHT6XmydjUt9TsuDRn
 
