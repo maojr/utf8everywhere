@@ -472,10 +472,10 @@ Linderman 提供关于 Python 的信息。
 
 ##9 外部链接
 * [Unicode 委员会](http://www.unicode.org/)(Unicode 标准，[PDF](http://www.unicode.org/versions/Unicode6.2.0/UnicodeStandard-6.2.pdf))
-* [Unicode 国际组成部分](http://site.icu-project.org/)(ICU)
-* [Joel On Unicode](http://www.joelonsoftware.com/articles/Unicode.html)——‘The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets’
+* [International Components for Unicode ](http://site.icu-project.org/)(ICU)
+* [Joel on Unicode](http://www.joelonsoftware.com/articles/Unicode.html)——‘The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets’
 * [Boost.Locale](http://cppcms.sourceforge.net/boost_locale/html/)—— C++实现的高质量本地化工具
-* [Should UTF-16 be considered harmful](http://programmers.stackexchange.com/questions/102205/should-utf-16-be-considered-harmful)Artyom Beilis 在 StackOverflow 上发起的讨论。
+* [Should UTF-16 be considered harmful     ](http://programmers.stackexchange.com/questions/102205/should-utf-16-be-considered-harmful)Artyom Beilis 在 StackOverflow 上发起的讨论。
 * [How twitter counts characters](https://dev.twitter.com/docs/counting-characters)
 
 ##10 非常感谢你的帮助和反馈
