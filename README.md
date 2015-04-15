@@ -460,9 +460,8 @@ _注意：为了讨论的目的，字符串的索引也是一种字符计数_
 语言中则是 4。误解的来源是这些语言的说明中使用字符表示一个码元，尽管程序员希望它是其它的东西。
 
 ##8 关于作者
-[Pavel Radzivilovsky](http://stackoverflow.com/users/73656/pavel-radzivilovsky),[Yakov Galka](http://stannum.co.il/about)和
-[Slava Novgorodov](http://slavanov.com/)写下的这份宣言。这是我们经验和对现实世界中 Unicode 的问题和现实中程序员犯的错误的
-调查的结果。目标是提高对文本问题的意识并启发工业范围内的变革，使得支持Unicode 
+这份宣言的作者是 [Pavel Radzivilovsky](http://stackoverflow.com/users/73656/pavel-radzivilovsky),[Yakov Galka](http://stannum.co.il/about) 和 [Slava Novgorodov](http://slavanov.com/)。这是我们的经验和对现实世界中 Unicode 
+的问题和对程序员在现实中犯的错误的调查的结果。目标是提高对文本问题的意识并启发工业范围内的变革，使得支持Unicode 
 编程更加容易，最终提升使用人类工程师写的那些程序的用户的体验。我们中的任何人都没有参与到 Unicode 委员会。特别感谢 Glenn 
 Linderman 提供关于 Python 的信息。
 
