@@ -46,10 +46,7 @@ _名古屋科学博物馆           Vadim Zlotnik摄。_
 
 * UTF-16 在当今仍然流行，即使在 Windows 世界之外。Qt，Java，C#，Python(在 CPython 3.3版本参考实现之前，[参考](http://utf8everywhere.org/#faq.python))和 ICU —— 他们都是用 UTF-16 作为内部字符串表示。
 
-{{----------- remain to do --------------}}
-
 * 在 Linux 世界中，窄字符串在各个地方被默认为 UTF-8 编码。举例来说，一个文件复制工具不需要在意编码问题。一旦ASCII字符串作为文件参数测试通过，任何其他语言的文件名都会工作正常，as arguments are treated as cookies(怎么翻译？).为了支持其他语言，复制工具的代码一点也不需要改变。fopen()无缝的接收 Unicode 字符，argv 也同样如此。
-
 
 ##4 透明数据争论
 
