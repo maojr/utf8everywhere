@@ -312,66 +312,66 @@ std::wstring widen(const std::string &amp;s);</code></pre>
 	</li>
 
 	<li>
-		<h3 id="faq.almostfw"><a class="aId" href="#faq.almostfw">Q: UTF-16 characters that take more than two bytes are extremely rare in the real world. This practically makes UTF-16 a fixed-width encoding, giving it a whole bunch of advantages. Can’t we just neglect these characters?</a></h3>
-		<p>A: Are you serious about not supporting all of Unicode in your software design? And, if you are going to support it anyway, how does the fact that non-BMP characters are rare practically change anything, except for making software testing harder? What does matter, however, is that text manipulations are relatively rare in real applications—compared to just passing strings around as-is. This means the "almost fixed width" has little performance advantage (see Performance), while having shorter strings may be significant.</p>
+		<h3 id="faq.almostfw"><a class="aId" href="#faq.almostfw">问：UTF-16 字符使用超过两个字节的情况在现实世界中非常少见。在实际中这使得UTF-16成为一种固定宽度的编码，使UTF-16有很多优势。我们可以忽略那些字符吗？</a></h3>
+		<p>答：你真的想在你的软件设计中不支持全部的 Unicode 字符？并且，如果你到底还是想支持它，非 BMP 字符实际上很少改变什么，除了让软件测试更加困难。然而，重要的是相对于仅仅传递字符串，文本操控在现实应用中相对少见。这意味着“几乎固定长度”几乎没有任何性能优势（参考性能），尽管有比较短的字符串也许很有意义。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.liberal"><a class="aId" href="#faq.liberal">Q: Why not just let any programmer use their favorite encoding internally, as long as they knows how to use it?</a></h3>
-		<p>A: We have nothing against correct usage of any encoding. However, it becomes a problem when the same type, such as <code>std::string</code>, means different things in different contexts. While it is ‘ANSI codepage’ for some, for others, it means ‘this code is broken and does not support non-English text’. In our programs, it means Unicode-aware UTF-8 string. This diversity is a source of many bugs and much misery. This additional complexity is something the world does not really need. The result is lots of Unicode-broken software, industry-wide. JoelOnSoftware <a href="http://www.joelonsoftware.com/articles/Unicode.html" rel="nofollow">suggests</a> that having every programmer be aware of encodings is the solution to Unicode-broken software. We believe that with one mainstream encoding becoming the default for software APIs, one will be able to write a correct file copy program <a href="#cookie">without being an expert in text and language issues</a>.</p>
+		<h3 id="faq.liberal"><a class="aId" href="#faq.liberal">6. 问：为什么不让程序员在内部使用他们最喜欢的编码，只要他们知道如何去使用？</a></h3>
+		<p>答：我们不反对正确使用任何编码。但是，当相同的类型，例如 <code>std::string</code> 在不同的语境下表示不同的类型的时候，这就成为了一个问题。当为一些人使用‘ANSI字符页’，这就意味着该代码是不完整的并且不支持非英文字符文本。在我们的程序中，这意味着 Unicode 意识的 UTF-8 字符串。这种多样性是许多问题和许多灾难的来源：这额外的复杂性并不是这个世界真的需要的一些东西，并且结果就是许多遍布工业界的不支持 Unicode 的糟糕软件。JoelOnSoftware <a href="http://www.joelonsoftware.com/articles/Unicode.html" rel="nofollow">建议</a>让每个程序员清楚编码是解决 Unicode 不友好软件的方案。 当软件的 APIs 有一个默认的主流编码时，一个程序员<a href="#cookie">不需要成为文本或语言问题的专家</a>便能够写出一个正确的文件复制程序。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.win.liberal"><a class="aId" href="#faq.win.liberal">Q: My application is GUI-only. It does not do IP communications or file IO. Why should I convert strings back and forth all the time for Windows API calls, instead of simply using wide state variables?</a></h3>
-		<p>This is a valid shortcut. Indeed, it may be a legitimate case for using wide strings. But, if you are planning to add some configuration or a log file in future, please consider converting the whole thing to narrow strings. That would be future-proof.</p>
+		<h3 id="faq.win.liberal"><a class="aId" href="#faq.win.liberal">问：我的应用只是一个 GUI 应用。它没有 IP 通讯或者文件 IO。为什么为了 Windows API 调用要来回转换字符串，而不是单纯地使用宽字符变量？</a></h3>
+		<p>答：这是一个有效的捷径。事实上，这也许是一个使用宽字符的合适情况。但是如果你计划将来添加一些配置或者一个log文件，请考虑将整个东西转成使用窄字符。那将在未来证明正确。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.def.unicode"><a class="aId" href="#faq.def.unicode">Q: Why do you turn on the <code>UNICODE</code> define, if you do not intend to use Windows’ <code>LPTSTR</code>/<code>TCHAR</code>/etc macros?</a></h3>
-		<p>A: This is an additional safety mechanism against plugging a UTF-8 <code>char*</code> string into ANSI-expecting function variants of Windows API. We want it to generate a compiler error. It is the same kind of a hard-to-find bug as passing an <code>argv[]</code> string to <code>fopen()</code> on Windows: it assumes that the user will never pass non-current-codepage filenames. You will be unlikely to find this kind of a bug by manual testing, unless your testers are trained to supply Chinese file names occasionally, and yet it is a broken program logic. Thanks to the <code>UNICODE</code> define, you get a compiler error for that.</p>
+		<h3 id="faq.def.unicode"><a class="aId" href="#faq.def.unicode">问：如果你不想使用 Windows 的 <code>LPTSTR</code>/<code>TCHAR</code>/<code>ETC</code> 宏，为什么要打开 <code>UNICODE</code> 定义？</a></h3>
+		<p>答：这是为了防止将一个 UTF-8 <code>char*</code> 字符串用到使用预期使用 ANSI 编码的 Windows API 函数中。我们想在这种情况下产生一个编译错误。这是一个和在 Windows 上传递一个 <code>argv[]</code> 字符串到 <code>fopen()</code>上一样难以发现的错误：在这种情况下系统假设用户不会传递一个非当前字符页的文件名。你将很难发现这种错误通过手动测试，除非你的测试经过训练，偶尔使用中文文件名，并且这是一个烂的程序逻辑。得益于使用 <code>UNICODE</code> 定义，你可以因此得到一个错误。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.naive"><a class="aId" href="#faq.naive">Q: Isn’t it quite naïve to think that Microsoft will stop using widechars one day?</a></h3>
-		<p>A: Let’s first see when they start supporting <code>CP_UTF8</code> as a valid codepage. This should not be very hard to do. Then, we see no reason why any Windows developer would continue using the widechar APIs. Also, adding support for <code>CP_UTF8</code> would ‘unbreak’ some of existing unicode-broken programs and libraries.</p>
-
-		<p>Some say that adding <code>CP_UTF8</code> support would <em>break</em> existing applications that use the ANSI API, and that this was supposedly the reason why Microsoft had to resort to creating the wide string API. This is not true. Even some popular ANSI encodings are variable length (Shift JIS, for example), so no correct code would become broken. The reason Microsoft chose UCS-2 is purely historical. Back then UTF-8 hasn’t yet existed, Unicode was believed to be ‘just a wider ASCII’, and it was cosidered important to use a fixed-width encoding.</p>
+		<h3 id="faq.naive"><a class="aId" href="#faq.naive">问：是不是认为微软某一天将会停止使用宽字符的想法很幼稚？</a></h3>
+		<p>让我们首先看他们什么时候开始支持 <code>CP_UTF-8</code> 做一个一个确定的locale.这应该很难做到。那时候，我们看不到任何人们继续使用宽字符 APIs 的任何理由。并且，增加对 <code>CP_UTF8</code> 的支持也不会改变现存的不支持 UNICODE 的程序和库。</p>
+		<p>一些人认为增加 <code>CP_UTF8</code> 的支持将会<em>破坏</em>现在使用 ANSI API的应用。这也被认为是微软不得不创造宽字符 API的原因。这不正确，即使一些流行的 ANSI 编码也是变长的（举例来说，Shift JIS）,所以并没有正确的代码会被破坏。微软选择 UCS-2 的原因完全是历史决定的。在那个时候，UTF-8 还并没有存在，Unicode 仅仅被认为是“一个宽的 ASCII”，使用固定长度的编码被认为是很重要的。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.boms"><a class="aId" href="#faq.boms">Q: What do you think about Byte Order Marks?</a></h3>
-		<p>A: According to the Unicode Standard (v6.2, p.30): <q>Use of a BOM is neither required nor recommended for UTF-8</q>.</p>
-		<p>Byte order issues are yet another reason to avoid UTF-16. UTF-8 has no endianness issues, and the UTF-8 BOM exists only to manifest that this is a UTF-8 stream. If UTF-8 remains the only popular encoding (as it already is in the internet world), the BOM becomes redundant. In practice, most UTF-8 text files omit BOMs today.</p>
-		<p>Using BOMs would require all existing code to be aware of them, even in simple scenarios as file concatenation. This is unacceptable.</p>
+		<h3 id="faq.boms"><a class="aId" href="#faq.boms">问：你如何看待字节顺序标记（Byte Order Marks）？</a></h3>
+		<p>答：根据 Unicode 标准（v6.2,p.30)：<q>对于 UTF-8，既不要求也不建议使用 BOM </q>。</p>
+		<p>字节顺序也是避免使用 UTF-16 的另一个原因。UTF-8 没有端性问题，并且 UTF-8 BOM 存在只是为了表明这是一个 UTF-8 流。 如果将来 UTF-8 是唯一流行的编码（在互联网世界中已经是这样），BOM 就会变得冗余。实践中，大多数 UTF-8 文本文件已经省略了 BOMs。</p>
+		<p>使用 BOMs 需要所有现存的代码知道它们，即使像在文件串接等很简单的情景中。这是不可接受的。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.crlf"><a class="aId" href="#faq.crlf">Q: What do you think about line endings?</a></h3>
-		<p>A: Always use <code>\n (0x0a)</code> line endings, even on Windows. Files should be read and written in binary mode, which guarantees interoperability—a program will always give the same output on any system. Since the C and C++ standards use <code>\n</code> as in-memory line endings, this will cause all files to be written in the POSIX convention. It may cause trouble when the file is opened in Notepad on Windows; however, any decent text editor understands such line endings.</p>
-		<p>We also prefer SI units, the <a href="https://en.wikipedia.org/?title=ISO_8601" rel="nofollow">ISO-8601</a> date format, and floating point to the <a href="https://en.wikipedia.org/wiki/Decimal_mark#Countries_using_Arabic_numerals_with_decimal_comma" rel="nofollow">floating comma</a>.</p>
+		<h3 id="faq.crlf"><a class="aId" href="#faq.crlf">问：你如何看待行尾字符 (line endings) ？</a></h3>
+		<p>答：总是使用 <code>\n(0x0a)</code> 行尾字符，即使是在 Windows 上。文件应该在二进制模式读和写，因为这保证了互通性 —— 在任何系统上，一个程序将总是会给出相同的输出。因为 C 和 C++ 标准使用 <code>\n</code> 作为内存中的行尾，这将导致所有文件用 POSIX 方式写入。当文件在 Windows 上用记事本打开的时候，这将会导致问题；但是，任何像样的文本阅读器都理解这样的行尾。</p>
+		
+		<p>我们同样很欣赏 SI 单元。<a href="https://en.wikipedia.org/?title=ISO_8601" rel="nofollow">ISO-8601</a> 日期格式，和浮点类型<a href="https://en.wikipedia.org/wiki/Decimal_mark#Countries_using_Arabic_numerals_with_decimal_comma" rel="nofollow">浮点</a>.</p>
 	</li>
 
 	<li>
-		<h3 id="faq.uni.perf"><a class="aId" href="#faq.uni.perf">Q: But what about performance of text processing algorithms, byte alignment, etc?</a></h3>
-		<p>A: Is it really better with UTF-16? Maybe so. ICU uses UTF-16 for historical reasons, thus it is quite hard to measure. However, most of the times strings are treated as cookies, not sorted or reversed every second use. A denser encoding is then favorable for performance.</p>
+		<h3 id="faq.uni.perf"><a class="aId" href="#faq.uni.perf">问：那文本处理算法的性能，字节对齐这些问题呢？</a></h3>
+		<p>答：使用 UTF-16 真的更好吗？也许是这样。ICU 因为历史的原因使用 UTF-16,因此很难去衡量。然而，大多数字符串被看做 cookies, 当再次用的时候既不排序也不反转。更小的字符编码也许更有利于性能。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.utf16.fault"><a class="aId" href="#faq.utf16.fault">Q: Is it really a fault of UTF-16 that people misuse it, assuming that it is 16 bits per character?</a></h3>
-		<p>A: Not really. But yes, safety is an important feature of every design, and encodings are no exception.</p>
+		<h3 id="faq.utf16.fault"><a class="aId" href="#faq.utf16.fault">人们经常误用 UTf-16，认为它每个字符占据 16 个字节,这真的是它的过错吗？</a></h3>
+		<p>答：不是，但是安全性是每一种设计的重要特性。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.confuse"><a class="aId" href="#faq.confuse">Q: If <code>std::string</code> means UTF-8, wouldn’t that get confused with code that stores plain text in <code>std::string</code>s?</a></h3>
-		<p>A: There is no such thing as plain text. There is no reason for storing codepage-ANSI or ASCII-only text in a class named ‘string’.</p>
+		<h3 id="faq.confuse"><a class="aId" href="#faq.confuse">问：如果 <code>std::string</code> 表示 UTF-8，那不会和在 <code>std::string</code>s 中存储纯文本的代码弄混吗？</a></h3>
+		<p>答：根本没有叫做纯文本的东西，根本没有任何理由在一个叫 string 的类中只保存 ANSI 代码页或者仅含 ASCII 字符的文本。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.cvt.perf"><a class="aId" href="#faq.cvt.perf">Q: Won’t the conversions between UTF-8 and UTF-16 when passing strings to Windows slow down my application?</a></h3>
+		<h3 id="faq.cvt.perf"><a class="aId" href="#faq.cvt.perf">问：当向窗口传递字符串的时候，UTF-8 和 UTF-16 编码之间的转换不会使我的程序变慢吗？</a></h3>
 
-		<p>A: First, you will do <em>some</em> conversion either way. It’s either when calling the system, or when interacting with the rest of the world, e.g. when sending a text string over TCP. Also, those of OS APIs which accept strings often perform tasks which are inherently slow, such as UI or file system operations. If your interaction with the system APIs dominate your application, here is a little experiment.</p>
+		<p>答：首先，无论怎样你都要做<em>一些</em>转换。无论是调用系统调用，还是和外界交流。即使在你的程序中你和系统的交互更频繁，这里有一个小小的实验。</p>
 
-		<p>One typical use of the OS APIs is to open files. This function executes in (184 ± 3)μs on my machine:</p>
+		<p>系统的一个典型应用是打开文件，这个函数在我的机器上执行了（184±3）μs:</p>
 
 		<pre><code>void f(const wchar_t* name)
 {
@@ -381,7 +381,7 @@ std::wstring widen(const std::string &amp;s);</code></pre>
     CloseHandle(f);
 }</code></pre>
 
-		<p>While this runs in (186 ± 0.7)μs:</p>
+		<p>而这个执行了（186±0.7）μs：</p>
 
 		<pre><code>void f(const char* name)
 {
@@ -391,97 +391,96 @@ std::wstring widen(const std::string &amp;s);</code></pre>
     CloseHandle(f);
 }</code></pre>
 
-		<p>(Run with <code>name=&quot;D:\\a\\test\\subdir\\subsubdir\\this is the sub dir\\a.txt&quot;</code> in both cases. It was averaged over 5 runs. We used an optimized <code>widen</code> that relies on <code>std::string</code> contiguous storage guarantee given by C++11.)</p>
-
-		<p>This is just (1 ± 2)% overhead. Also, <code>MultiByteToWideChar</code> is not the fastest UTF-8↔UTF-16 conversion function.</p>
+		<p>(在这两个情况中，都使用 <code>name=&quot;D:\a\test\subdir\subsubdir\this is the sub dir\a.txt&quot;</code> 运行。平均运行超过了5次。我们使用了一个优化过的依赖于 C++11中 <code>std::string</code> 临近存储的 <code>widen</code> 。)</p>
+		<p>这仅仅多了（1±2）%。此外，<code>MultiByteToWideChar</code> 肯定不是最快的 UTF-8 ↔ UTF-16 转换函数。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.literal"><a class="aId" href="#faq.literal">Q: How do I write UTF-8 string literal in my C++ code?</a></h3>
+		<h3 id="faq.literal"><a class="aId" href="#faq.literal">问：如何在我的 C++ 代码中写入 UTF-8 字符串？</a></h3>
 
-		<p>A: If you internationalize your software then all non-ASCII strings will be loaded from an external translation database, so it is not a problem.</p>
+		<p>答：如果你想国际化你的软件，那么所有的非 ASCII 字符串都会从一个外部翻译数据库加载，所以这不是一个问题。</p>
 
-		<p>If you still want to embed a special character you can do it as follows. In C++11 you can do it as:</p>
+		<p>如果你依然想嵌入特殊的字符，你可以按照下面的做。在 C++11 中，你可以这样做：</p>
 
 		<p class="display"><code>u8&quot;∃y ∀x ¬(x ≺ y)&quot;</code></p>
 
-		<p>With compilers that do not support ‘u8’ you can hard-code the UTF-8 code units as follows:</p>
+		<p>对于不支持 'u8' 的编译器，你可以按下面硬编码 UTF-8 的码元：</p>
 
 		<p class="display"><code>&quot;\xE2\x88\x83y \xE2\x88\x80x \xC2\xAC(x \xE2\x89\xBA y)&quot;</code></p>
 
-		<p>However the most straightforward way is to just write the string as-is and save the source file encoded in UTF-8:</p>
+		<p>但是最直接的方法是就按照字符串来写并且用 UTF-8 编码保存源文件。</p>
 
 		<p class="display"><code>&quot;∃y ∀x ¬(x ≺ y)&quot;</code></p>
 
-		<p>Unfortunately, MSVC converts it to some ANSI codepage, corrupting the string. To work around this, save the file in UTF-8 <em>without BOM</em>. MSVC will assume that it is in the correct codepage and will not touch your strings. However, it renders it impossible to use Unicode identifiers and wide string literals (that you will not be using anyway).</p>
+		<p>不幸的是，MSVC 将它转化成一些 ANSI 内码表，使字符串出错。为了解决这个问题，用没有 BOM 的 UTF-8 保存文件。MSVC 就会认为这是正确的内码表，就不会改变你的字符串。然而，这使它无法使用 Unicode 标识符和宽字符串（总之你不会使用它）。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.convert"><a class="aId" href="#faq.convert">Q: I have a complex large char-based Windows application. What is the easiest way to make it Unicode-aware?</a></h3>
-		<p>Keep the chars. Define <code>UNICODE</code> and <code>_UNICODE</code> to get compiler errors where <code>narrow()</code>/<code>widen()</code> should be used (this is done automatically by setting <strong>Use Unicode Character Set</strong> in Visual Studio project settings). Find all <code>fstream</code> and <code>fopen()</code> uses, and use wide overloads as described above. By now, you are almost done.</p>
-		<p>If you use 3rd-party libraries that do not support Unicode, e.g. forwarding file name strings as-is to <code>fopen()</code>, you will have to work around with tools such as <code>GetShortPathName()</code> as shown above.</p>
+		<h3 id="faq.convert"><a class="aId" href="#faq.convert">问：我有一个复杂的大的基于 char 的 Windows 应用，让它可以感知 Unicode 的最简单方法是什么？</a></h3>
+		<p>答: 保留着 chars。定义 <code>UNICODE</code> 和 <code>_UNICODE</code> ，使得在应该使用 <code>narrow()</code>/<code>widen()</code> 的地方得到编译错误（通过在 Visual Studio 项目设置中选择使用 <strong>Unicode 字符集</strong>，这会自动完成）。找到所有使用 <code>fstream</code> 和 <code>fopen()</code> 的地方，按照上面描述的重载宽字符。现在，你几乎完成了。</p>
+		<p>如果你使用不支持 Unicode 的第三方库，例如直接转发文件名字符串到 <code>fopen()</code>，你将不得不使用上面显示的 <code>GetShortPathName()</code> 工具解决这个问题。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.python"><a class="aId" href="#faq.python">Q: What about Python? I heard they worked hard in v3.3 to support Unicode better.</a></h3>
-		<p>A: Perhaps, they should have done less and the support would have been better. In the CPython v3.3 reference implementation, the internal string representation was changed. The UTF-16 was replaced by one of three possible encodings (ISO-8859-1, UCS-2 or UCS-4) depending on the actual string content. To add a single non-ASCII or non-BMP character, the entire string will often be implicitly converted to a different encoding. The internal encoding is transparent to the script. This design is meant to <em>optimize the performance of indexing operations</em> on Unicode code points. However, we argue that counting or indexing code points <a href="#myth.strlen">should not be important</a> for the majority of uses—compared, for instance, to grapheme clusters. To our knowledge, Python currently provides no support of the latter.</p>
+		<h3 id="faq.python"><a class="aId" href="#faq.python">问：Python 呢？我听说他们在 3.3 版本中为了更好的支持 Unicode 非常努力。</a></h3>
+		<p>答：也许他们应该做少一点，这样支持会更好。在 3.3 版本的 CPython 参考实现中，内部字符串表示做了改动。根据字符串内容的不同，UTF-16 编码被三种可能的编码 （ISO-8859-1,UCS-2或者 UCS-4）之一取代。增加一个非 ASCII 或者 非 BMP 字符，整个字符串将会经常隐形地转换为不同的编码。内部编码对于脚本来说是透明的。这个设计是为了在Unicode码点上<em>优化索引操作的性能</em>。但是，我们认为相对于字形族，计数或者索引码点对于大多数的使用<a href="#myth.strlen">并不重要</a>。据我们所知，Python 现今并不对后者提供支持。</p>
 
-		<p>Therefore, we oppose representation-agnostic handling of strings, in favor of representation-transparent API with a UTF-8 internal representation. Indexing operations would be counting code units rather than the code points, as they in fact did before the change. This would also simplify the implementation and also improve performance, e.g. in scripts dealing with the Web, which is already dominated by UTF-8 encoded text, thus making the Python programming language more applicable in the server-side world. One may argue about the safety of string-cutting operations by script programmers, but then again, the same argument is valid for splitting grapheme clusters. Even though Unicode is now fully supported, we believe that Python, as a modern tool with less historical burden to carry, must do better job in text handling.</p>
+		<p>因此，我们反对字符串不可知的表示处理方式，赞成使用UTF-8内部编码表示的透明表示的API。索引操作应该计算码元而不是码点，正如他们改变前做的那样。这样也将简化实现，并且提高性能，例如，在已经被 UTF-8 编码文本统治的 Web 的脚本上，这样可以使 Python 编程语言在服务端领域更加可用。一些人也许会认为脚本程序员字符剪切操作的安全性，但又说回来，对于分开象形族，这样的认为是有效的。虽然现在已经全面支持 Unicode，我们相信 Python，作为一个有很少历史负担的现代工具，一定能在文本处理领域做的更好。</p>
 
-		<p>Other than that, JPython and IronPython continue to rely on the less fortunate encoding used by their hosting platforms (Java and .NET, respectively) and care must be taken to handle the surrogate pairs correctly there.</p>
+		<p>除了这些，JPython 和 IronPython 依然依赖于它们寄主平台（分别是 Java 和 .NET）的不够好的编码，并且为了正确的处理代理对，一定要小心。</p>
 	</li>
 
 	<li>
-		<h3 id="faq.ood"><a class="aId" href="#faq.ood">Q: But why <code>std::string</code>? Wouldn’t it be a better, object-oriented approach to have a UTF-8 aware string class?</a></h3>
-		<p>A: Not every piece of code dealing with strings is actually involved in processing and validation of text. A file copy program which receives Unicode file names and passes them to file IO routines, would do just fine with a simple byte buffer. If you design a library that accepts strings, the simple, standard and lightweight <code>std::string</code> would do just fine. On the contrary, it would be a mistake to reinvent a new string class and force everyone through your peculiar interface. Of course, if one needs more than just passing strings around, he should then use appropriate text processing tools. However, such tools are better to be independent of the storage class used, in the spirit of the container/algorithm separation in the STL. In fact, <a href="http://www.gotw.ca/gotw/084.htm">some consider</a> <code>std::string</code> interface too bloated, as most of it was better to be moved out of the <code>std::string</code> class.</p>
+		<h3 id="faq.ood"><a class="aId" href="#faq.ood">19.问；但是为什么 <code>std::string</code>？它不会是一个更好的，基于对象的感知 UTF-8 的字符串类？</a></h3>
+		<p>答：并不是处理字符串的每一块代码都实际上涉及到文本的处理和确认。一个需要接收 Unicode 文件名并且传递给文件 IO 的文件复制程序，能够很好的处理简单字节缓冲区。如果你设计一个接收字符串的库，简单标准和轻量的 <code>std::string</code> 就足够。相反，重新发明一个新的字符串类并且强迫每个人使用你的奇特的接口是错误的。当然，如果一个人需要的不仅仅是传递字符串，他应该使用合适的文本处理工具。</p>
+		<p>然而, 这样的工具与存储的类之间像 STL 中容器/算法分离那样相互独立将会更好。事实上, <a href="http://www.gotw.ca/gotw/084.htm">一些人认为</a> <code>std::string</code> 接口太臃肿了，<code>std::string</code>类中的大多数移除去会更好。</p>
 	</li>
 	<li>
-		<h3 id="faq.whats.now"><a class="aId" href="#faq.whats.now">Q: I already use this approach and I want to make our vision come true. What can I do?</a></h3>
-		<p>A: Spread the word.</p>
-		<p>Review your code and see what library is most painful to use in portable Unicode-aware code. Open a bug report to the authors. If you are a C or C++ library author, use <code>char*</code> and <code>std::string</code> with UTF-8 implied, and refuse to support ANSI code pages—since they are inherently Unicode-broken.</p>
-		<p>If you are a Microsoft employee, push for implementing support of the <code>CP_UTF8</code> as one of narrow API code pages.</p>
-		<p>Further ideas:</p>
+		<h3 id="faq.whats.now"><a class="aId" href="#faq.whats.now">20. 我已经使用了这个方法并且我想让我们的目标实现，我能做些什么？</a></h3>
+		<p>答：传播下去。</p>
+		<p>检查你的代码，了解在一个可移植的，支持 Unicode 的代码中，哪些库用起来最痛苦。给作者发一份 bug 报告。如果你是一个 C 或者 C++ 库作者，使用支持 UTF-8 的 <code>char*</code> 和 <code>std::string</code>，并且拒绝支持 ANSI 内码表 —— 因为他们本质上是不支持 Unicode 的。</p>
+		<p>如果你是一个微软的员工，推动支持CP_UTF8 作为一个窄 API 代码页。</p>
+		<p>进一步的建议:</p>
 		<ul>
-			<li>Create a repository for patches of commonly used 3rd-party libraries for UTF-8 support (e.g. PugiXML, LibTIFF, etc.) These are written in standard C and do not care about Windows.</li>
-			<li>Create a link-time patch for standard library functions (e.g. <code>fopen()</code>) on Windows, which would do the proper parameter conversion. This can be done for <code>main()</code> and the global environment variables.</li>
+			<li>建立一个程序库，存放使常用的第三方库（如PugiXML，LibTIFF等）支持 UTF-8 的补丁 。</li>
+			<li>给 Windows 上的标准库函数（例如 <code>fopen()</code>）建立一个链接时补丁，完成恰当的参数转换。这个可以为 <code>main()</code> 函数和全局变量实现。</li>
 		</ul>
 	</li>
 </ol>
 
 
-<h2 id="about"><a class="aId" href="#about">About the authors</a></h2>
+<h2 id="about"><a class="aId" href="#about">关于作者</a></h2>
 
-<p>This manifesto was written by <a href="http://meshnotes.com/9SrRpAypTr8e">Pavel Radzivilovsky</a>, <a href="http://stannum.co.il/about">Yakov Galka</a> and <a href="http://slavanov.com/">Slava Novgorodov</a>. It is a result of our experience and research of real-world Unicode issues and mistakes done by real-world programmers. Our goal here is to improve awareness of text issues and to inspire industry-wide changes to make Unicode-aware programming easier, ultimately improving the experience of users of those programs written by human engineers. Neither of us is involved in the Unicode consortium.</p>
+<p>这份宣言的作者是 <a href="http://meshnotes.com/9SrRpAypTr8e">Pavel Radzivilovsky</a>，<a href="http://stannum.co.il/about">Yakov Galka</a> 和 <a href="http://slavanov.com/">Slava Novgorodov</a>。这是我们的经验和对现实世界中 Unicode 的问题和对程序员在现实中犯的错误的调查的结果。目标是提高对文本问题的意识并启发工业范围内的变革，使得支持 Unicode 编程更加容易，最终提升使用人类工程师写的那些程序的用户的体验。我们中的任何人都没有参与到 Unicode 委员会。</p>
 
-<p>Special thanks to Glenn Linderman for providing information about Python, and to Markus Künne, Jelle Geerts and Lazy Rui for reporting bugs and typos in this document.</p>
+<p>特别感谢 Glenn Linderman 提供关于 Python 的信息, Markus Künne, Jelle Geerts and Lazy Rui 报告文档中的错误和排版错误。</p>
 
-<p>Much of the text was inspired by <a href="http://programmers.stackexchange.com/questions/102205/should-utf-16-be-considered-harmful">discussions on StackOverflow initiated by Artyom Beilis</a>, the author of Boost.Locale. Additional inspiration came from the development conventions at <a href="http://www.visionmap.com">VisionMap</a> and Michael Hartl’s <a href="http://tauday.com/tau-manifesto">tauday.org</a>.</p>
+<p>许多文本来自于 Boost.Locale 的作者 <a href="http://programmers.stackexchange.com/questions/102205/should-utf-16-be-considered-harmful">Artyom Beilis 在 StackOverflow 上发起的讨论</a>。另外的启发来自 <a href="http://www.visionmap.com">VisionMap</a> 的发展会议和 Micheal Hartl 的 <a href="http://tauday.com/tau-manifesto">tauday.org</a>。</p>
 
-
-<h2 id="extern"><a class="aId" href="#extern">External links</a></h2>
+<h2 id="extern"><a class="aId" href="#extern">外部链接</a></h2>
 
 <ul>
-	<li><a href="http://www.unicode.org/">The Unicode Consortium</a> (The Unicode Standard, <a href="http://www.unicode.org/versions/Unicode6.2.0/UnicodeStandard-6.2.pdf">PDF</a>)</li>
+	<li><a href="http://www.unicode.org/">The Unicode 委员会</a> (Unicode 标准, <a href="http://www.unicode.org/versions/Unicode6.2.0/UnicodeStandard-6.2.pdf">PDF</a>)</li>
 
 	<li><a href="http://site.icu-project.org/">International Components for Unicode</a> (ICU)</li>
 
 	<li><a href="http://www.joelonsoftware.com/articles/Unicode.html">Joel on Unicode</a>—‘The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets’</li>
 
-	<li><a href="http://cppcms.sourceforge.net/boost_locale/html/">Boost.Locale</a>—high quality localization facilities in a C++ way.</li>
+	<li><a href="http://cppcms.sourceforge.net/boost_locale/html/">Boost.Locale</a>C++实现的高质量本地化工具</li>
 
 	<li><a href="http://programmers.stackexchange.com/questions/102205/should-utf-16-be-considered-harmful">Should UTF-16 be considered harmful</a> on StackOverflow, started by Artyom Beilis.</li>
 
 	<li><a href="https://dev.twitter.com/docs/counting-characters">How twitter counts characters</a></li>
 </ul>
 
-<h2 id="donate"><a class="aId" href="#donate">Feedback</a></h2>
+<h2 id="donate"><a class="aId" href="#donate">反馈</a></h2>
 
-<p>You can leave comments/feedback on the Facebook <a href="https://www.facebook.com/UTF8Everywhere">UTF-8 Everywhere</a> page. Your help and feedback are much appreciated.</p>
+<p>你可以在 Facebook <a href="https://www.facebook.com/UTF8Everywhere">UTF-8 Everywhere</a> 页面评论或反馈。非常感谢你的帮助和反馈。</p>
 
 <p style="text-align:center">
 <img src="data/utf8donate.png" alt="1UTF8gQmvChQ4MwUHT6XmydjUt9TsuDRn" /><br/>
 Bitcoin donate to: 1UTF8gQmvChQ4MwUHT6XmydjUt9TsuDRn<br/>
-The cash will be used for research and promotion.
+该款项将会用于研究和推广。
 </p>
 
 <div id="g-plusone"></div>
