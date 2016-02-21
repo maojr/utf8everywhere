@@ -216,8 +216,6 @@
 
 <p>这部分是为了多平台库开发和 Windows 平台编程。Windows 平台的问题是它不支持与 Unicode 兼容的窄字符串系统 APIs。将 Unicode 字符串传给 Windows API 的唯一方式是通过转化成 UTF-16（即宽字符）。</p>
 
-<p>注意我们的说明和微软的关于 Unicode 转换的原始说明显著不同。我们基于实施宽字符转换的方法尽可能与 API 调用相近，并且不处理宽字符数据。在上一部分我们解释了这将导致更好的性能，稳定性，代码简介和其他软件更好的集成。</p>
-
 <ul>
 	<li>不要在任何地方使用 <code>wchar_t</code>或<code>std::wstring</code>，除非在和接受 UTF-16 的APIs的临近点。</li>
 
@@ -297,7 +295,7 @@ std::wstring widen(const std::string &amp;s);</code></pre>
 
 		<p>答：不对。值得庆祝的是，C# 和 Java 都提供 16 位，小于 Unicode 字符集的 <code>char</code> 类型。.NET 索引 <code>str[i]</code> 工作在内部表示单元，因此又出现一个有漏洞的抽象。子串方法将会返回一个无效的字符串，将一个非 BMP 字符分成几部分。</p>
 
-		<p>此外，当你将文本写入到磁盘，网络通信，外部设备或其他任何程序会读取地方上的文件的时候，你不得不在意编码。 不要管任何对内容的假定，在这些情况一定要使用 <code>System.Text.Encoding.UTF8<code>(.Net) ，不要使用 <code>Encoding.ASCII<code>，UTF-16 或者手机PDU。</p>
+		<p>此外，当你将文本写入到磁盘，网络通信，外部设备或其他任何程序会读取地方上的文件的时候，你不得不在意编码。 不要管任何对内容的假定，在这些情况一定要使用 <code>System.Text.Encoding.UTF8</code>(.Net) ，不要使用 <code>Encoding.ASCII</code>，UTF-16 或者手机PDU。</p>
 
 		<p>Web 框架像 ASP.NET 也受制于框架之下内部字符串表示选择的匮乏：一个网络应用预期的字符串输出（或者输入）几乎总是 UTF-8 编码，导致在高输入输出的网络应用和网络服务中面临大量的转换。</p>
 	</li>
@@ -313,7 +311,7 @@ std::wstring widen(const std::string &amp;s);</code></pre>
 	</li>
 
 	<li>
-		<h3 id="faq.liberal"><a class="aId" href="#faq.liberal">6. 问：为什么不让程序员在内部使用他们最喜欢的编码，只要他们知道如何去使用？</a></h3>
+		<h3 id="faq.liberal"><a class="aId" href="#faq.liberal">问：为什么不让程序员在内部使用他们最喜欢的编码，只要他们知道如何去使用？</a></h3>
 		<p>答：我们不反对正确使用任何编码。但是，当相同的类型，例如 <code>std::string</code> 在不同的语境下表示不同的类型的时候，这就成为了一个问题。当为一些人使用‘ANSI字符页’，这就意味着该代码是不完整的并且不支持非英文字符文本。在我们的程序中，这意味着 Unicode 意识的 UTF-8 字符串。这种多样性是许多问题和许多灾难的来源：这额外的复杂性并不是这个世界真的需要的一些东西，并且结果就是许多遍布工业界的不支持 Unicode 的糟糕软件。JoelOnSoftware <a href="http://www.joelonsoftware.com/articles/Unicode.html" rel="nofollow">建议</a>让每个程序员清楚编码是解决 Unicode 不友好软件的方案。 当软件的 APIs 有一个默认的主流编码时，一个程序员<a href="#cookie">不需要成为文本或语言问题的专家</a>便能够写出一个正确的文件复制程序。</p>
 	</li>
 
