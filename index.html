@@ -21,24 +21,24 @@
 
 <p>本文档建议在 Windows 应用程序中也使用 UTF-8 编码存储字符串，尽管由于历史原因和原生API级别 UTF-8 支持的缺乏这个标准在这个领域并不流行。我们相信即使在这个平台上，后面的一些观点胜过原生支持的缺乏。并且，我们建议永远忘记内码表（ANSI codepages）和它们的用途。在文本字符串中混用任意种语言是用户的权利。</p>
 
-<p>在工业上，很多本地化相关的 bugs <a href="http://www.joelonsoftware.com/articles/Unicode.html">源于</a>程序员缺乏 Unicode 编码知识。然而，我们认为，如果一个应用不是专业用于文本，它的架构应该能够让程序无需考虑编码问题。举例来说，一个文件复制工具不应该为了支持非英语文件名而写的不同。在这份宣言里，我们还将告诉一个程序员如果他不想陷入 Unicode 的复杂之中并且不关心 <a href="#cookie">字符串的内部</a>，他应该怎么做。</p>
+<p>在工业上，很多本地化相关的程序错误<a href="http://www.joelonsoftware.com/articles/Unicode.html">源于</a>程序员缺乏 Unicode 编码知识。然而，我们认为，如果一个应用不是专业用于文本，它的架构应该能够让程序无需考虑编码问题。举例来说，一个文件复制工具不应该因为支持非英语文件名而写不同的代码。在这份宣言里，我们还将告诉那些不想陷入 Unicode 的复杂并且不关心<a href="#cookie">字符串的内部</a>的程序员他应该的做法。</p>
 
-<p>此外，在文本处理情景中，我们建议不应该将计数或者遍历 Unicode 码点视为特别重要的任务。许多开发者错误地将码点视为 ASCII 字符的继承。这导致了像 Python 字符串 O(1) 码点获取。然而，事实上 Unicode 非常复杂并且没有像 <em>Unicode 字符</em>这样的通用定义。相对与 Uncoide 字符族，码元或者甚至语言中的单词，我们没有特殊的原因去更青睐 Unicode 码点。另一方面，将 UTF-8 码元视为一个文本的基本单元对于很多任务来说特别有用，如解析常用的字符数据类型。这源于这种编码的特性。字位，码元，码点和其他相关的 Unicode 相关的术语在<a href="#characters">部分5</a>有解释。编码字符串的操作在<a href="#textops">部分7</a>有讨论。</p>
+<p>此外，在文本处理情景中，我们建议不应将计数或者遍历 Unicode 码点视为特别重要的任务。许多开发者错误地将码点视为 ASCII 字符的某种继承。这导致了像 Python 字符串 O(1) 码点获取。然而，事实上 Unicode 非常复杂并且没有像<em>Unicode 字符</em>这样的通用定义。相对于 Uncoide 字符族(grapheme clusters)，码元(code units)或者甚至语言中的单词，我们没有特殊的原因去更青睐 Unicode 码点。另一方面，将 UTF-8 码元视为一个文本的基本单元对于很多任务来说特别有用，如解析常用的字符数据类型。这源于这种编码的特性。字位(Graphemes)，码元(code units)，码点(code units)和其他相关的 Unicode 相关的术语在<a href="#characters">部分5</a>有解释。编码字符串的操作在<a href="#textops">部分7</a>有讨论。</p>
 
 <h2 id="background"><a class="aId" href="#background">背景</a></h2>
 
-<p>1988年，Joseph D. Becker 发布了<a href="http://unicode.org/history/unicode88.pdf">第一个 Unicode 草案提议</a>。他的设计的根据是一个天真的假设:每个字符 16 位就足够。在1991年，Unicode 标准的第一个版本发布，码点被限制在16位。在接下来的几年中，许多系统添加了对 Unicode 的支持并且转换到了 UCS-2 编码。对于像Qt框架，(1992)，Windows NT 3.1(1993)和 Java (1995)等当时的新技术，它是非常有吸引力的。</p>
+<p>1988年，Joseph D. Becker 发布了<a href="http://unicode.org/history/unicode88.pdf">第一个 Unicode 草案提议</a>。他的设计的根据是一个天真的假设：每个字符 16 位就足够。在1991年，Unicode 标准的第一个版本发布，码点被限制在16位。在接下来的几年中，许多系统添加了对 Unicode 的支持并且转换到了 UCS-2 编码。对于 Qt 框架(1992)，Windows NT 3.1(1993)和 Java (1995)等当时的新技术，它是非常有吸引力的。</p>
 
-<p>然而，很快就发现每个字符16位对于 Unicode 是不够的。在1996年，UTF-16编码被创造出来，从而使现存的系统能够处理非16位的字符。这使得最初选用16位字符编码，也就是固定宽度编码的理论没有了依据。现在，Unicode 包含超过109449个字符，其中大约74500个属于中日韩（CJK）统一表意文字。</p>
+<p>然而，很快就发现每个字符16位对于 Unicode 是不够的。在1996年，UTF-16编码被创造出来，从而使现存的系统能够处理非16位的字符。这使得最初选用16位字符编码，也就是固定宽度编码的理论没有了依据。现在，Unicode 包含超过109449个字符，其中大约74500个属于中日韩（CJK）统一表意文字(ideographs)。</p>
 
 <div style="text-align:center">
-	<img src="data/nagoya-museum.jpg" style="text-align: center; max-width: 100%; width: 480px;" alt="A little child playing an encodings game in front of a large poster about encodings."/>
+	<img src="data/nagoya-museum.jpg" style="text-align: center; max-width: 100%; width: 480px;" alt="在一个巨大的关于编码的海报前玩编码游戏的小男孩"/>
 	<div style="font-style: italic; margin:1ex;">名古屋科学博物馆。Vadim Zlotnik 摄。</div>
 </div>
 
-<p>微软经常错误地将 Unicode 和宽字符 (widechar) 作为了 UCS-2 和 UTF-16 的同义词。而且，因为 UTF-8 不能被设置为窄字符串的 WinAPI 的编码，人们必须定义 <code>UNICODE</code> 编译代码。Windows C++ 程序员被教育 Unicode 必须和宽字符（甚至是使用与编译器设置相关的TCHARs，允许程序员不支持全部的 Unicode 码点）一起使用。作为这些混乱的结果，许多 Windows 程序员在关于如何正确处理文本非常疑惑。</p>
+<p>微软经常错误地将 Unicode 和宽字符 (widechar) 作为了 UCS-2 和 UTF-16 的同义词。而且，因为 UTF-8 不能被设置为窄字符串的 WinAPI 的编码，人们必须定义 <code>UNICODE</code> 编译代码。Windows C++ 程序员被教育 Unicode 必须和宽字符（甚至是使用与编译器设置相关的TCHARs，允许程序员不支持全部的 Unicode 码点）一起使用。作为这些混乱的结果，许多 Windows 程序员在如何正确处理文本上非常疑惑。</p>
 
-<p>与此同时，在 Linux 和 Web 世界里，有一个默认的共识：UTF-8 是地球上对 Unicode 最好的编码。尽管相对于其它的文本，它对英语，包括计算机语言（例如 C++，HTML，XML等）提供了更短的表示，在常用的字符集上，它也很少比 UTF-16 编码效率低。</p>
+<p>与此同时，在 Linux 和 Web 世界里，有一个默认的共识：UTF-8 是对 Unicode 最好的编码。尽管相对于其它的文本，它对英语，包括计算机语言（例如 C++，HTML，XML等）提供了更短的表示，在常用的字符集上，它也很少比 UTF-16 编码效率低。</p>
 
 <h2 id="facts"><a class="aId" href="#facts">事实</a></h2>
 
