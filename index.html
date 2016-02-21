@@ -55,14 +55,14 @@
 
 	<li>UTF-16 经常被误用做固定宽度的编码，即使在 Windows 原生应用中：在普通文本编辑控制中（直到 Vista）,删除一个在 UTF-16 中占据 4 个字节的字符，要使用两个退格键。在 Windows 7中，控制台将该字符显示为两个无效字符，无论使用什么字体。</li>
 
-	<li>许多 Windows 第三方库不支持 Unicode：它们使用窄字符串参数并且将它们传递给 ANSI API。即使文件名也是这样。总的来说，这样是行不通的，因为字符串不可能使用一个 ANSI 页码表示完全（如果它包含来自不同 Unicode 区块的字符）。在 Windows 上解决文件名问题的方案是添加一个 8.3 路径到这个文件上并添加到该类库上。如果这个库需要建立一个不存在的文件，这将不可行。如果路径非常长并且 8.3 格式比 <code>MAX_PATH<code> 长，这也将不可行。如果在操作系统设置中短名生成不可行，这仍将不可行。</li>
+	<li>许多 Windows 第三方库不支持 Unicode：它们使用窄字符串参数并且将它们传递给 ANSI API。即使文件名也是这样。总的来说，这样是行不通的，因为字符串不可能使用一个 ANSI 页码表示完全（如果它包含来自不同 Unicode 区块的字符）。在 Windows 上解决文件名问题的方案是添加一个 8.3 路径到这个文件上并添加到该类库上。如果这个库需要建立一个不存在的文件，这将不可行。如果路径非常长并且 8.3 格式比 <code>MAX_PATH</code> 长，这也将不可行。如果在操作系统设置中短名生成不可行，这仍将不可行。</li>
 
 	<li>在 C++ 中，除了使用 UTF-8 编码，没有方法能使 <code>std::exception::what()</code> 返回 Unicode。除了使用 UTF-8，没有别的办法使 Unicode 支持 <code>localeconv</code>。</li>
 
 	<li>UTF-16 在今天仍然流行，即使在 Windows 世界之外。Qt，Java，C#，Python（在 CPython 3.3版本参考实现之前，<a href="#faq.python">参考</a>）和 <a href="http://en.wikipedia.org/wiki/International_Components_for_Unicode"> ICU </a> —— 他们都是用 UTF-16 表示内部字符串。</li>
 </ul>
 
-<h2 id="cookie"><a class="aId" href="#cookie">透明数据争论</a></h2>
+<h2 id="cookie"><a class="aId" href="#cookie">透明数据(opaque data)争论</a></h2>
 
 <p>让我们回到文件复制工具。在 UNIX 世界中，窄字符串几乎到处被默认为 UTF-8 编码。因此，文件复制工具的作者不需要考虑 Unicode。一旦 ASCII 字符串作为文件名参数测试通过，任何其他语言的文件名都会工作正常，as arguments are treated as  <a href="http://en.wikipedia.org/wiki/Opaque_data_type">cookies</a>. 复制工具的代码<em>一点</em>也不需要改变就可以支持其他语言。<code>fopen()</code> 无缝的接收 Unicode 字符，<code>argv</code> 也同样如此。</p>
 
