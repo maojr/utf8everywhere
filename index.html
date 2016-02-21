@@ -23,7 +23,7 @@
 
 <p>在工业上，很多本地化相关的 bugs <a href="http://www.joelonsoftware.com/articles/Unicode.html">源于</a>程序员缺乏 Unicode 编码知识。然而，我们认为，如果一个应用不是专业用于文本，它的架构应该能够让程序无需考虑编码问题。举例来说，一个文件复制工具不应该为了支持非英语文件名而写的不同。在这份宣言里，我们还将告诉一个程序员如果他不想陷入 Unicode 的复杂之中并且不关心 <a href="#cookie">字符串的内部</a>，他应该怎么做。</p>
 
-<p>此外，在文本处理情景中，我们建议不应该将计数或者遍历 Unicode 码点视为特别重要的任务。许多开发者错误地将码点视为 ASCII 字符的继承。这导致了像 Python 字符串 O(1) 码点获取。然而，事实上 Unicode 非常复杂并且没有像 <em>Unicode 字符</em>这样的通用定义。相对与 Uncoide 字符族，码元或者甚至语言中的单词，我们没有特殊的原因去更青睐 Unicode 码点。另一方面，将 UTF-8 码元视为一个文本的基本单元对于很多任务来说特别有用，如解析常用的字符数据类型。这源于这种编码的特性。字位，码元，码点和其他相关的 Unicode 相关的术语在 <a href="#characters">部分 5 </a>有解释。编码字符串的操作在 <a href="#textops">部分 7</a> 有讨论。</p>
+<p>此外，在文本处理情景中，我们建议不应该将计数或者遍历 Unicode 码点视为特别重要的任务。许多开发者错误地将码点视为 ASCII 字符的继承。这导致了像 Python 字符串 O(1) 码点获取。然而，事实上 Unicode 非常复杂并且没有像 <em>Unicode 字符</em>这样的通用定义。相对与 Uncoide 字符族，码元或者甚至语言中的单词，我们没有特殊的原因去更青睐 Unicode 码点。另一方面，将 UTF-8 码元视为一个文本的基本单元对于很多任务来说特别有用，如解析常用的字符数据类型。这源于这种编码的特性。字位，码元，码点和其他相关的 Unicode 相关的术语在<a href="#characters">部分5</a>有解释。编码字符串的操作在<a href="#textops">部分7</a>有讨论。</p>
 
 <h2 id="background"><a class="aId" href="#background">背景</a></h2>
 
@@ -427,12 +427,12 @@ std::wstring widen(const std::string &amp;s);</code></pre>
 	</li>
 
 	<li>
-		<h3 id="faq.ood"><a class="aId" href="#faq.ood">19.问；但是为什么 <code>std::string</code>？它不会是一个更好的，基于对象的感知 UTF-8 的字符串类？</a></h3>
+		<h3 id="faq.ood"><a class="aId" href="#faq.ood">问；但是为什么 <code>std::string</code>？它不会是一个更好的，基于对象的感知 UTF-8 的字符串类？</a></h3>
 		<p>答：并不是处理字符串的每一块代码都实际上涉及到文本的处理和确认。一个需要接收 Unicode 文件名并且传递给文件 IO 的文件复制程序，能够很好的处理简单字节缓冲区。如果你设计一个接收字符串的库，简单标准和轻量的 <code>std::string</code> 就足够。相反，重新发明一个新的字符串类并且强迫每个人使用你的奇特的接口是错误的。当然，如果一个人需要的不仅仅是传递字符串，他应该使用合适的文本处理工具。</p>
 		<p>然而, 这样的工具与存储的类之间像 STL 中容器/算法分离那样相互独立将会更好。事实上, <a href="http://www.gotw.ca/gotw/084.htm">一些人认为</a> <code>std::string</code> 接口太臃肿了，<code>std::string</code>类中的大多数移除去会更好。</p>
 	</li>
 	<li>
-		<h3 id="faq.whats.now"><a class="aId" href="#faq.whats.now">20. 我已经使用了这个方法并且我想让我们的目标实现，我能做些什么？</a></h3>
+		<h3 id="faq.whats.now"><a class="aId" href="#faq.whats.now">我已经使用了这个方法并且我想让我们的目标实现，我能做些什么？</a></h3>
 		<p>答：传播下去。</p>
 		<p>检查你的代码，了解在一个可移植的，支持 Unicode 的代码中，哪些库用起来最痛苦。给作者发一份 bug 报告。如果你是一个 C 或者 C++ 库作者，使用支持 UTF-8 的 <code>char*</code> 和 <code>std::string</code>，并且拒绝支持 ANSI 内码表 —— 因为他们本质上是不支持 Unicode 的。</p>
 		<p>如果你是一个微软的员工，推动支持CP_UTF8 作为一个窄 API 代码页。</p>
