@@ -19,26 +19,26 @@
 
 <p>特别地，我们认为非常流行的 UTF-16 编码（在 Windows 世界被错用做宽字符（widechar）和 Unicode 的同义词）不应该用在库 APIs 中，除非用于处理文本的特殊的库如 ICU。</p>
 
-<p>本文档建议在 Windows 应用程序中也使用 UTF-8 编码存储字符串，尽管由于历史原因和原生API级别 UTF-8 支持的缺乏这个标准在这个领域并不流行。我们相信即使在这个平台上，后面的一些观点胜过原生支持的缺乏。并且，我们建议永远忘记内码表（ANSI codepages）和它们的用途。在文本字符串中混用任意种语言是属于用户的权利。</p>
+<p>本文档建议在 Windows 应用程序中也使用 UTF-8 编码存储字符串，尽管由于历史原因和原生API级别 UTF-8 支持的缺乏这个标准在这个领域并不流行。我们相信即使在这个平台上，后面的一些观点胜过原生支持的缺乏。并且，我们建议永远忘记内码表（ANSI codepages）和它们的用途。在文本字符串中混用任意种语言是用户的权利。</p>
 
-<p>在工业上，很多本地化相关的 bugs <a href="http://www.joelonsoftware.com/articles/Unicode.html">源于</a>程序员缺乏 Unicode 编码知识。然而，我们认为，如果一个应用不是专业用于文本，它的架构应该能够让程序无需考虑编码问题。举例来说，一个文件复制工具不应该为了支持非英语文件名而写的不同。在这份宣言里，我们还将告诉一个程序员如果他不想陷入 Unicode 的复杂之中并且不关心 <a href="#cookie">字符串的内部</a>，他应该怎么做。</p>
+<p>在工业上，很多本地化相关的程序错误<a href="http://www.joelonsoftware.com/articles/Unicode.html">源于</a>程序员缺乏 Unicode 编码知识。然而，我们认为，如果一个应用不是专业用于文本，它的架构应该能够让程序无需考虑编码问题。举例来说，一个文件复制工具不应该因为支持非英语文件名而写不同的代码。在这份宣言里，我们还将告诉那些不想陷入 Unicode 的复杂并且不关心<a href="#cookie">字符串的内部</a>的程序员他应该的做法。</p>
 
-<p>此外，在文本处理情景中，我们建议不应该将计数或者遍历 Unicode 码点视为特别重要的任务。许多开发者错误地将码点视为 ASCII 字符的继承。这导致了像 Python 字符串 O(1) 码点获取。然而，事实上 Unicode 非常复杂并且没有像 <em>Unicode 字符</em>这样的通用定义。相对与 Uncoide 字符族，码元或者甚至语言中的单词，我们没有特殊的原因去更青睐 Unicode 码点。另一方面，将 UTF-8 码元视为一个文本的基本单元对于很多任务来说特别有用，如解析常用的字符数据类型。这源于这种编码的特性。字位，码元，码点和其他相关的 Unicode 相关的术语在 <a href="#characters">部分 5 </a>有解释。编码字符串的操作在 <a href="#textops">部分 7</a> 有讨论。</p>
+<p>此外，在文本处理情景中，我们建议不应将计数或者遍历 Unicode 码点视为特别重要的任务。许多开发者错误地将码点视为 ASCII 字符的某种继承。这导致了像 Python 字符串 O(1) 码点获取。然而，事实上 Unicode 非常复杂并且没有像<em>Unicode 字符</em>这样的通用定义。相对于 Uncoide 字符族(grapheme clusters)，码元(code units)或者甚至语言中的单词，我们没有特殊的原因去更青睐 Unicode 码点。另一方面，将 UTF-8 码元视为一个文本的基本单元对于很多任务来说特别有用，如解析常用的字符数据类型。这源于这种编码的特性。字位(Graphemes)，码元(code units)，码点(code units)和其他相关的 Unicode 相关的术语在<a href="#characters">部分5</a>有解释。编码字符串的操作在<a href="#textops">部分7</a>有讨论。</p>
 
 <h2 id="background"><a class="aId" href="#background">背景</a></h2>
 
-<p>1988年，Joseph D. Becker 发布了<a href="http://unicode.org/history/unicode88.pdf">第一个 Unicode 草案提议</a>。他的设计的根据是一个天真的假设:每个字符 16 位就足够。在1991年，Unicode 标准的第一个版本发布，码点被限制在16位。在接下来的几年中，许多系统添加了对 Unicode 的支持并且转换到了 UCS-2 编码。对于像Qt框架，(1992)，Windows NT 3.1(1993)和 Java (1995)等当时的新技术，它是非常有吸引力的。</p>
+<p>1988年，Joseph D. Becker 发布了<a href="http://unicode.org/history/unicode88.pdf">第一个 Unicode 草案提议</a>。他的设计的根据是一个天真的假设：每个字符 16 位就足够。在1991年，Unicode 标准的第一个版本发布，码点被限制在16位。在接下来的几年中，许多系统添加了对 Unicode 的支持并且转换到了 UCS-2 编码。对于 Qt 框架(1992)，Windows NT 3.1(1993)和 Java (1995)等当时的新技术，它是非常有吸引力的。</p>
 
-<p>然而，很快就发现每个字符16位对于 Unicode 是不够的。在1996年，UTF-16编码被创造出来，从而使现存的系统能够处理非16位的字符。这使得最初选用16位字符编码，也就是固定宽度编码的理论没有了依据。现在，Unicode 包含超过109449个字符，其中大约74500个属于中日韩（CJK）统一表意文字。</p>
+<p>然而，很快就发现每个字符16位对于 Unicode 是不够的。在1996年，UTF-16编码被创造出来，从而使现存的系统能够处理非16位的字符。这使得最初选用16位字符编码，也就是固定宽度编码的理论没有了依据。现在，Unicode 包含超过109449个字符，其中大约74500个属于中日韩（CJK）统一表意文字(ideographs)。</p>
 
 <div style="text-align:center">
-	<img src="data/nagoya-museum.jpg" style="text-align: center; max-width: 100%; width: 480px;" alt="A little child playing an encodings game in front of a large poster about encodings."/>
+	<img src="data/nagoya-museum.jpg" style="text-align: center; max-width: 100%; width: 480px;" alt="在一个巨大的关于编码的海报前玩编码游戏的小男孩"/>
 	<div style="font-style: italic; margin:1ex;">名古屋科学博物馆。Vadim Zlotnik 摄。</div>
 </div>
 
-<p>微软经常错误地将 Unicode 和宽字符 (widechar) 作为了 UCS-2 和 UTF-16 的同义词。而且，因为 UTF-8 不能被设置为窄字符串的 WinAPI 的编码，人们必须定义 <code>UNICODE</code> 编译代码。Windows C++ 程序员被教育 Unicode 必须和宽字符（甚至是使用与编译器设置相关的TCHARs，允许程序员不支持全部的 Unicode 码点）一起使用。作为这些混乱的结果，许多 Windows 程序员在关于如何正确处理文本非常疑惑。</p>
+<p>微软经常错误地将 Unicode 和宽字符 (widechar) 作为了 UCS-2 和 UTF-16 的同义词。而且，因为 UTF-8 不能被设置为窄字符串的 WinAPI 的编码，人们必须定义 <code>UNICODE</code> 编译代码。Windows C++ 程序员被教育 Unicode 必须和宽字符（甚至是使用与编译器设置相关的TCHARs，允许程序员不支持全部的 Unicode 码点）一起使用。作为这些混乱的结果，许多 Windows 程序员在如何正确处理文本上非常疑惑。</p>
 
-<p>与此同时，在 Linux 和 Web 世界里，有一个默认的共识：UTF-8 是地球上对 Unicode 最好的编码。尽管相对于其它的文本，它对英语，包括计算机语言（例如 C++，HTML，XML等）提供了更短的表示，在常用的字符集上，它也很少比 UTF-16 编码效率低。</p>
+<p>与此同时，在 Linux 和 Web 世界里，有一个默认的共识：UTF-8 是对 Unicode 最好的编码。尽管相对于其它的文本，它对英语，包括计算机语言（例如 C++，HTML，XML等）提供了更短的表示，在常用的字符集上，它也很少比 UTF-16 编码效率低。</p>
 
 <h2 id="facts"><a class="aId" href="#facts">事实</a></h2>
 
@@ -55,14 +55,14 @@
 
 	<li>UTF-16 经常被误用做固定宽度的编码，即使在 Windows 原生应用中：在普通文本编辑控制中（直到 Vista）,删除一个在 UTF-16 中占据 4 个字节的字符，要使用两个退格键。在 Windows 7中，控制台将该字符显示为两个无效字符，无论使用什么字体。</li>
 
-	<li>许多 Windows 第三方库不支持 Unicode：它们使用窄字符串参数并且将它们传递给 ANSI API。即使文件名也是这样。总的来说，这样是行不通的，因为字符串不可能使用一个 ANSI 页码表示完全（如果它包含来自不同 Unicode 区块的字符）。在 Windows 上解决文件名问题的方案是添加一个 8.3 路径到这个文件上并添加到该类库上。如果这个库需要建立一个不存在的文件，这将不可行。如果路径非常长并且 8.3 格式比 <code>MAX_PATH<code> 长，这也将不可行。如果在操作系统设置中短名生成不可行，这仍将不可行。</li>
+	<li>许多 Windows 第三方库不支持 Unicode：它们使用窄字符串参数并且将它们传递给 ANSI API。即使文件名也是这样。总的来说，这样是行不通的，因为字符串不可能使用一个 ANSI 页码表示完全（如果它包含来自不同 Unicode 区块的字符）。在 Windows 上解决文件名问题的方案是添加一个 8.3 路径到这个文件上并添加到该类库上。如果这个库需要建立一个不存在的文件，这将不可行。如果路径非常长并且 8.3 格式比 <code>MAX_PATH</code> 长，这也将不可行。如果在操作系统设置中短名生成不可行，这仍将不可行。</li>
 
 	<li>在 C++ 中，除了使用 UTF-8 编码，没有方法能使 <code>std::exception::what()</code> 返回 Unicode。除了使用 UTF-8，没有别的办法使 Unicode 支持 <code>localeconv</code>。</li>
 
 	<li>UTF-16 在今天仍然流行，即使在 Windows 世界之外。Qt，Java，C#，Python（在 CPython 3.3版本参考实现之前，<a href="#faq.python">参考</a>）和 <a href="http://en.wikipedia.org/wiki/International_Components_for_Unicode"> ICU </a> —— 他们都是用 UTF-16 表示内部字符串。</li>
 </ul>
 
-<h2 id="cookie"><a class="aId" href="#cookie">透明数据争论</a></h2>
+<h2 id="cookie"><a class="aId" href="#cookie">透明数据(opaque data)争论</a></h2>
 
 <p>让我们回到文件复制工具。在 UNIX 世界中，窄字符串几乎到处被默认为 UTF-8 编码。因此，文件复制工具的作者不需要考虑 Unicode。一旦 ASCII 字符串作为文件名参数测试通过，任何其他语言的文件名都会工作正常，as arguments are treated as  <a href="http://en.wikipedia.org/wiki/Opaque_data_type">cookies</a>. 复制工具的代码<em>一点</em>也不需要改变就可以支持其他语言。<code>fopen()</code> 无缝的接收 Unicode 字符，<code>argv</code> 也同样如此。</p>
 
@@ -427,12 +427,12 @@ std::wstring widen(const std::string &amp;s);</code></pre>
 	</li>
 
 	<li>
-		<h3 id="faq.ood"><a class="aId" href="#faq.ood">19.问；但是为什么 <code>std::string</code>？它不会是一个更好的，基于对象的感知 UTF-8 的字符串类？</a></h3>
+		<h3 id="faq.ood"><a class="aId" href="#faq.ood">问；但是为什么 <code>std::string</code>？它不会是一个更好的，基于对象的感知 UTF-8 的字符串类？</a></h3>
 		<p>答：并不是处理字符串的每一块代码都实际上涉及到文本的处理和确认。一个需要接收 Unicode 文件名并且传递给文件 IO 的文件复制程序，能够很好的处理简单字节缓冲区。如果你设计一个接收字符串的库，简单标准和轻量的 <code>std::string</code> 就足够。相反，重新发明一个新的字符串类并且强迫每个人使用你的奇特的接口是错误的。当然，如果一个人需要的不仅仅是传递字符串，他应该使用合适的文本处理工具。</p>
 		<p>然而, 这样的工具与存储的类之间像 STL 中容器/算法分离那样相互独立将会更好。事实上, <a href="http://www.gotw.ca/gotw/084.htm">一些人认为</a> <code>std::string</code> 接口太臃肿了，<code>std::string</code>类中的大多数移除去会更好。</p>
 	</li>
 	<li>
-		<h3 id="faq.whats.now"><a class="aId" href="#faq.whats.now">20. 我已经使用了这个方法并且我想让我们的目标实现，我能做些什么？</a></h3>
+		<h3 id="faq.whats.now"><a class="aId" href="#faq.whats.now">我已经使用了这个方法并且我想让我们的目标实现，我能做些什么？</a></h3>
 		<p>答：传播下去。</p>
 		<p>检查你的代码，了解在一个可移植的，支持 Unicode 的代码中，哪些库用起来最痛苦。给作者发一份 bug 报告。如果你是一个 C 或者 C++ 库作者，使用支持 UTF-8 的 <code>char*</code> 和 <code>std::string</code>，并且拒绝支持 ANSI 内码表 —— 因为他们本质上是不支持 Unicode 的。</p>
 		<p>如果你是一个微软的员工，推动支持CP_UTF8 作为一个窄 API 代码页。</p>
