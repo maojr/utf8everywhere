@@ -23,7 +23,7 @@
 
 <p>在工业上，很多本地化相关的程序错误<a href="http://www.joelonsoftware.com/articles/Unicode.html">源于</a>程序员缺乏 Unicode 编码知识。然而，我们认为，如果一个应用不是专业用于文本，它的架构应该能够让程序无需考虑编码问题。举例来说，一个文件复制工具不应该因为支持非英语文件名而写不同的代码。在这份宣言里，我们还将告诉那些不想陷入 Unicode 的复杂并且不关心<a href="#cookie">字符串的内部</a>的程序员他应该的做法。</p>
 
-<p>此外，在文本处理情景中，我们建议不应将计数或者遍历 Unicode 码点视为特别重要的任务。许多开发者错误地将码点视为 ASCII 字符的某种继承。这导致了像 Python 字符串 O(1) 码点获取。然而，事实上 Unicode 非常复杂并且没有像<em>Unicode 字符</em>这样的通用定义。相对于 Uncoide 字符族(grapheme clusters)，码元(code units)或者甚至语言中的单词，我们没有特殊的原因去更青睐 Unicode 码点。另一方面，将 UTF-8 码元视为一个文本的基本单元对于很多任务来说特别有用，如解析常用的字符数据类型。这源于这种编码的特性。字位(Graphemes)，码元(code units)，码点(code units)和其他相关的 Unicode 相关的术语在<a href="#characters">部分5</a>有解释。编码字符串的操作在<a href="#textops">部分7</a>有讨论。</p>
+<p>此外，在文本处理情景中，我们建议不应将计数或者遍历 Unicode 码点视为特别重要的任务。许多开发者错误地将码点视为 ASCII 字符的某种继承。这导致了像 Python 字符串 O(1) 码点获取。然而，事实上 Unicode 非常复杂并且没有像<em>Unicode 字符</em>这样的通用定义。相对于 Uncoide 字符族(grapheme clusters)，码元(code units)或者甚至语言中的单词，我们没有特殊的原因去更青睐 Unicode 码点。另一方面，将 UTF-8 码元视为一个文本的基本单元对于很多任务来说特别有用，如解析常用的字符数据类型。这源于这种编码的特性。字位(Graphemes)，码元(code units)，码点(code points)和其他相关的 Unicode 相关的术语在<a href="#characters">部分5</a>有解释。编码字符串的操作在<a href="#textops">部分7</a>有讨论。</p>
 
 <h2 id="background"><a class="aId" href="#background">背景</a></h2>
 
