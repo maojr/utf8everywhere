@@ -1,4 +1,4 @@
-utf8everywhere
+无处不在的 UTF-8(utf8everywhere)
 ==============
 
 Translation for everywhere.org.
