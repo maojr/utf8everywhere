@@ -13,17 +13,17 @@
 
 <h2 id="intro"><a class="aId" href="#intro">这份文档的目的</a></h2>
 
-<aside class="rightFloater">这份文档包含特殊字符。如果没有合适的渲染支持，你也许会看到问号，方块或其它符号。</aside>
+<aside class="rightFloater">这份文档包含特殊字符。如果没有合适的渲染支持，你也许会看到问号，方块或其他符号。</aside>
 
-<p>我们的目标是促进 UTF-8 编码的使用与支持，让人们确信 UTF-8 编码应该是在内存或磁盘中存储文本字符串，沟通和所有其他用途的默认编码。我们相信我们的方案提升了性能，降低了软件的复杂度并且避免了很多 Unicode 相关的错误。我们相信所有其它 Unicode（或文本）的编码适用于优化极少的边界情况，主流用户应该避免使用。</p>
+<p>我们的目标是促进 UTF-8 编码的使用与支持，让人们确信 UTF-8 编码应该是在内存或磁盘中存储文本字符串，沟通和所有其他用途的默认编码。我们相信我们的方案会提升性能，降低软件的复杂度并且帮助避免很多 Unicode 相关的软件错误。我们认为所有其他 Unicode（或广义来说，所有文本）的编码只适用于极少量的用于优化性能的情况，主流用户应该避免使用。</p>
 
-<p>特别地，我们认为非常流行的 UTF-16 编码（在 Windows 世界被错用做宽字符（widechar）和 Unicode 的同义词）不应该用在库 APIs 中，除非用于处理文本的特殊的库如 ICU。</p>
+<p>特别地，我们认为非常流行的 UTF-16 编码（在 Windows 世界常被错称为宽字符（widechar）或者 Unicode）绝不应该用在程序库 API 中，除非专门用于处理文本处理的库，如 ICU。</p>
 
-<p>本文档建议在 Windows 应用程序中也使用 UTF-8 编码存储字符串，尽管由于历史原因和原生API级别 UTF-8 支持的缺乏这个标准在这个领域并不流行。我们相信即使在这个平台上，后面的一些观点胜过原生支持的缺乏。并且，我们建议永远忘记内码表（ANSI codepages）和它们的用途。在文本字符串中混用任意种语言是用户的权利。</p>
+<p>本文档建议在 Windows 应用程序中也使用 UTF-8 编码存储字符串，尽管由于历史原因和原生API级别 UTF-8 支持的缺乏，这个标准在这个领域并不流行。我们相信即使在这个平台上，后面的提到的一些好处会胜过原生支持的缺乏。并且，我们建议永远忘记内码表（ANSI codepages）和它们的用途。在文本字符串中混用任意种语言是用户的权利。</p>
 
 <p>在工业上，很多本地化相关的程序错误<a href="http://www.joelonsoftware.com/articles/Unicode.html">源于</a>程序员缺乏 Unicode 编码知识。然而，我们认为，如果一个应用不是专业用于文本，它的架构应该能够让程序无需考虑编码问题。举例来说，一个文件复制工具不应该因为支持非英语文件名而写不同的代码。在这份宣言里，我们还将告诉那些不想陷入 Unicode 的复杂并且不关心<a href="#cookie">字符串的内部</a>的程序员他应该的做法。</p>
 
-<p>此外，在文本处理情景中，我们建议不应将计数或者遍历 Unicode 码点视为特别重要的任务。许多开发者错误地将码点视为 ASCII 字符的某种继承。这导致了像 Python 字符串 O(1) 码点获取。然而，事实上 Unicode 非常复杂并且没有像<em>Unicode 字符</em>这样的通用定义。相对于 Uncoide 字符族(grapheme clusters)，码元(code units)或者甚至语言中的单词，我们没有特殊的原因去更青睐 Unicode 码点。另一方面，将 UTF-8 码元视为一个文本的基本单元对于很多任务来说特别有用，如解析常用的字符数据类型。这源于这种编码的特性。字位(Graphemes)，码元(code units)，码点(code points)和其他相关的 Unicode 相关的术语在<a href="#characters">部分5</a>有解释。编码字符串的操作在<a href="#textops">部分7</a>有讨论。</p>
+<p>此外，在文本处理情景中，我们建议不应将计数或者遍历 Unicode 码点视为特别重要的任务。许多开发者错误地将码点视为 ASCII 字符的某种继承。这导致了像 Python 字符串 O(1) 复杂度码点访问这样的软件设计决策。然而，事实上 Unicode 非常复杂并且没有像<em>Unicode 字符</em>这样的通用定义。相对于 Uncoide 字符族(grapheme clusters)，码元(code units)或者甚至语言中的单词，我们没有特殊的原因去更青睐 Unicode 码点(code point)。另一方面，将 UTF-8 码元(字节)视为一个文本的基本单元对于很多任务来说特别有用，如解析常用的字符数据类型。这源于这种编码的特性。字位(Graphemes)，码元(code units)，码点(code points)和其他相关的 Unicode 相关的术语在<a href="#characters">部分5</a>有解释。编码字符串的操作在<a href="#textops">部分7</a>有讨论。</p>
 
 <h2 id="background"><a class="aId" href="#background">背景</a></h2>
 
@@ -38,7 +38,7 @@
 
 <p>微软经常错误地将 Unicode 和宽字符 (widechar) 作为了 UCS-2 和 UTF-16 的同义词。而且，因为 UTF-8 不能被设置为窄字符串的 WinAPI 的编码，人们必须定义 <code>UNICODE</code> 编译代码。Windows C++ 程序员被教育 Unicode 必须和宽字符（甚至是使用与编译器设置相关的TCHARs，允许程序员不支持全部的 Unicode 码点）一起使用。作为这些混乱的结果，许多 Windows 程序员在如何正确处理文本上非常疑惑。</p>
 
-<p>与此同时，在 Linux 和 Web 世界里，有一个默认的共识：UTF-8 是对 Unicode 最好的编码。尽管相对于其它的文本，它对英语，包括计算机语言（例如 C++，HTML，XML等）提供了更短的表示，在常用的字符集上，它也很少比 UTF-16 编码效率低。</p>
+<p>与此同时，在 Linux 和 Web 世界里，有一个默认的共识：UTF-8 是对 Unicode 最好的编码。尽管相对于其他的文本，它对英语，包括计算机语言（例如 C++，HTML，XML等）提供了更短的表示，在常用的字符集上，它也很少比 UTF-16 编码效率低。</p>
 
 <h2 id="facts"><a class="aId" href="#facts">事实</a></h2>
 
@@ -51,7 +51,7 @@
 
 	<li>当按字典序排序的时候，UTF-8 和 UTF-32 顺序相同，UTF-16则不同。</li>
 
-	<li>UTF-8 编码处理在英语字母和其它 ASCII 字符上效率更高（每个字符一个字节），而 UTF-16 编码则在处理几个亚洲字符集上效率更好（每个字符两个字节而不是 UTF-8编码中的3个）。在 Web 世界中，英语的 HTML/XML 标签和各种文本混在一起，这使得 UTF-8 成为了最受欢迎的选择。西里尔字母，希伯来语和几个其它流行的 Unicode 字符表块在 UTF-16 和 UTF-8 中都是 2 个字节。</li>
+	<li>UTF-8 编码处理在英语字母和其他 ASCII 字符上效率更高（每个字符一个字节），而 UTF-16 编码则在处理几个亚洲字符集上效率更好（每个字符两个字节而不是 UTF-8编码中的3个）。在 Web 世界中，英语的 HTML/XML 标签和各种文本混在一起，这使得 UTF-8 成为了最受欢迎的选择。西里尔字母，希伯来语和几个其他流行的 Unicode 字符表块在 UTF-16 和 UTF-8 中都是 2 个字节。</li>
 
 	<li>UTF-16 经常被误用做固定宽度的编码，即使在 Windows 原生应用中：在普通文本编辑控制中（直到 Vista）,删除一个在 UTF-16 中占据 4 个字节的字符，要使用两个退格键。在 Windows 7中，控制台将该字符显示为两个无效字符，无论使用什么字体。</li>
 
@@ -79,7 +79,7 @@
 <p>对于 Windows 程序员和多平台库的开发商，我们会在 <a href="#windows">Windows平台如何处理文本</a> 部分深入探讨我们为了更好支持Unicode 的处理文本字符串和重构程序的方法。</p>
 
 
-<h2 id="characters"><a class="aId" href="#characters">Glyphs, graphemes 和其它 Unicode 类型</a></h2>
+<h2 id="characters"><a class="aId" href="#characters">Glyphs, graphemes 和其他 Unicode 类型</a></h2>
     <p>这里有一个带有我们评论的按照 Unicode 标准的关于字符，码点，码元和象形聚簇定义的摘录。你可以参考标准的相关部分获取更多详细的描述。</p>
 
 	<aside class="rightFloater"><p class="display" style="font-size:1.5em">Приве́т नमस्ते שָׁלוֹם</p><p>你看到了多少<em>字符</em>？</p></aside>
@@ -189,7 +189,7 @@
 
 <h3 id="myth.strlen.correctness"><a class="aId" href="#myth.strlen.correctness">5. <code>length()</code> 字符串操作一定计算用户可见字符或者已编码字符的数量。如果不是，它就没能正确地支持 Unicode。</a></h3>
 
-<p>程序库和编程语言对 Unicode 的支持经常通过返回字符串长度操作的值来判断。根据对 Unicode 支持的测试，大多数流行的语言，例如 C#,Java 甚至连 ICU 都不支持 Unicode。举个例子，一个字符串 ‘🐨’的长度在UTF-16 作为内部字符串表示的地方经常被报告为2，在内部使用 UTF-8 的语言中则是 4。误解的来源是这些语言的说明中使用字符表示一个码元，尽管程序员希望它是其它的东西。</p>
+<p>程序库和编程语言对 Unicode 的支持经常通过返回字符串长度操作的值来判断。根据对 Unicode 支持的测试，大多数流行的语言，例如 C#,Java 甚至连 ICU 都不支持 Unicode。举个例子，一个字符串 ‘🐨’的长度在UTF-16 作为内部字符串表示的地方经常被报告为2，在内部使用 UTF-8 的语言中则是 4。误解的来源是这些语言的说明中使用字符表示一个码元，尽管程序员希望它是其他的东西。</p>
 
 <p>因此，这些 API 返回的码元数实际上非常重要。当写一个 UTF-8 字符串到一个文件，最重要的是字节数的长度。计数任何类型的字符，并不是非常有用。</p>
 
@@ -276,7 +276,7 @@ std::wstring widen(const std::string &amp;s);</code></pre>
 
 <p>这个库也为常用的处理文件和使用 iostreams 读写 UTF-8 的C 和 C++ 库函数提供了一组封装。</p>
 
-<p>这些函数和封装通过 Windows 的 <code>MultiByteToWideChar</code> 和 <code>WideCharToMultiByte</code> 函数很容易实现。任何其它 （也许更快的）转化方法也可以使用。</p>
+<p>这些函数和封装通过 Windows 的 <code>MultiByteToWideChar</code> 和 <code>WideCharToMultiByte</code> 函数很容易实现。任何其他 （也许更快的）转化方法也可以使用。</p>
 
 <h2 id="faq"><a class="aId" href="#faq">常见问题集</a></h2>
 <ol class="faqList">
@@ -286,8 +286,8 @@ std::wstring widen(const std::string &amp;s);</code></pre>
 	</li>
 
 	<li>
-		<h3 id="faq.anglophile"><a id="faq.angle.saxon"></a><a class="aId" href="#faq.anglophile">问：你是一个亲英派码？你是否私下认为英语字母和文化比其它要优越？</a></h3>
-		<p>答：不，并且我的国家也并不是讲 ASCII 上字符的语言的国家。我不认为使用一个字节编码 ASCII 字符的编码是盎格鲁中心主义思想，或者与人们沟通有任何的关系。即使一个人可以争辩说程序，网页和 XML 文件，操作系统文件名和其它电脑和电脑的接口本不应该存在，只要他们存在，文本就不仅仅是给人类读者的。</p>
+		<h3 id="faq.anglophile"><a id="faq.angle.saxon"></a><a class="aId" href="#faq.anglophile">问：你是一个亲英派码？你是否私下认为英语字母和文化比其他要优越？</a></h3>
+		<p>答：不，并且我的国家也并不是讲 ASCII 上字符的语言的国家。我不认为使用一个字节编码 ASCII 字符的编码是盎格鲁中心主义思想，或者与人们沟通有任何的关系。即使一个人可以争辩说程序，网页和 XML 文件，操作系统文件名和其他电脑和电脑的接口本不应该存在，只要他们存在，文本就不仅仅是给人类读者的。</p>
 	</li>
 
 	<li>
@@ -302,7 +302,7 @@ std::wstring widen(const std::string &amp;s);</code></pre>
 
 	<li>
 		<h3 id="faq.utf8.fossil"><a class="aId" href="#faq.utf8.fossil">问：UTF-8 不就是一个尝试兼容 ASCII 的一个尝试吗？为什么要保持这个老化石?</a></h3>
-		<p>答：不管 UTF-8 是不是作为一个兼容的 hack 被发明出来。现在，它是一个比其它任何编码都优秀和流行的编码。</p>
+		<p>答：不管 UTF-8 是不是作为一个兼容的 hack 被发明出来。现在，它是一个比其他任何编码都优秀和流行的编码。</p>
 	</li>
 
 	<li>
@@ -341,7 +341,7 @@ std::wstring widen(const std::string &amp;s);</code></pre>
 	<li>
 		<h3 id="faq.crlf"><a class="aId" href="#faq.crlf">问：你如何看待行尾字符 (line endings) ？</a></h3>
 		<p>答：总是使用 <code>\n(0x0a)</code> 行尾字符，即使是在 Windows 上。文件应该在二进制模式读和写，因为这保证了互通性 —— 在任何系统上，一个程序将总是会给出相同的输出。因为 C 和 C++ 标准使用 <code>\n</code> 作为内存中的行尾，这将导致所有文件用 POSIX 方式写入。当文件在 Windows 上用记事本打开的时候，这将会导致问题；但是，任何像样的文本阅读器都理解这样的行尾。</p>
-		
+
 		<p>我们同样很欣赏 SI 单元。<a href="https://en.wikipedia.org/?title=ISO_8601" rel="nofollow">ISO-8601</a> 日期格式，和浮点类型<a href="https://en.wikipedia.org/wiki/Decimal_mark#Countries_using_Arabic_numerals_with_decimal_comma" rel="nofollow">浮点</a>.</p>
 	</li>
 
