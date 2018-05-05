@@ -9,6 +9,6 @@ Refer to http://utf8everywhere.org for the English & latest version.
 
 ### update
 
-已经有志愿者在utf8everywhere.org提交了中文版本的翻译，可以参考:
+已经有志愿者在utf8everywhere.org提交了新的中文版本的翻译，可以参考:
 
 http://utf8everywhere.org/zh-cn

@@ -27,7 +27,7 @@
 
 <h2 id="background"><a class="aId" href="#background">背景</a></h2>
 
-<p>1988年，Joseph D. Becker 发布了<a href="http://unicode.org/history/unicode88.pdf">第一个 Unicode 草案提议</a>。他的设计的根据是一个天真的假设：每个字符 16 位就足够。在1991年，Unicode 标准的第一个版本发布，码点被限制在16位。在接下来的几年中，许多系统添加了对 Unicode 的支持并且转换到了 UCS-2 编码。对于 Qt 框架(1992)，Windows NT 3.1(1993)和 Java (1995)等当时的新技术，它是非常有吸引力的。</p>
+<p>1988年，Joseph D. Becker 发布了<a href="http://unicode.org/history/unicode88.pdf">第一个 Unicode 提议草案</a>。他的设计基于一个天真的假设：每个字符 16 位就足够包含所有字符。1991年，Unicode 标准的第一个版本发布，码点(code point)被限制在16位。在接下来的几年中，许多系统添加了对 Unicode 的支持并且切换到了 UCS-2 编码。对于 Qt 框架(1992)，Windows NT 3.1(1993)和 Java (1995)等当时的新技术，它是非常有吸引力的。</p>
 
 <p>然而，很快就发现每个字符16位对于 Unicode 是不够的。在1996年，UTF-16编码被创造出来，从而使现存的系统能够处理非16位的字符。这使得最初选用16位字符编码，也就是固定宽度编码的理论没有了依据。现在，Unicode 包含超过109449个字符，其中大约74500个属于中日韩（CJK）统一表意文字(ideographs)。</p>
 
@@ -36,14 +36,14 @@
 	<div style="font-style: italic; margin:1ex;">名古屋科学博物馆。Vadim Zlotnik 摄。</div>
 </div>
 
-<p>微软经常错误地将 Unicode 和宽字符 (widechar) 作为了 UCS-2 和 UTF-16 的同义词。而且，因为 UTF-8 不能被设置为窄字符串的 WinAPI 的编码，人们必须定义 <code>UNICODE</code> 编译代码。Windows C++ 程序员被教育 Unicode 必须和宽字符（甚至是使用与编译器设置相关的TCHARs，允许程序员不支持全部的 Unicode 码点）一起使用。作为这些混乱的结果，许多 Windows 程序员在如何正确处理文本上非常疑惑。</p>
+<p>微软经常错误地将 Unicode 和宽字符 (widechar) 用做 UCS-2 和 UTF-16 的同义词。而且，因为 UTF-8 不能被设置为窄字符串 WinAPI 的编码，人们必须定义 <code>UNICODE</code> 来编译代码。Windows C++ 程序员被教育 Unicode 必须和宽字符（甚至是使用与编译器设置相关的TCHARs，允许程序员不支持全部的 Unicode 码点）一起使用。作为这种混乱的结果，许多 Windows 程序员在如何正确处理文本上非常疑惑。</p>
 
-<p>与此同时，在 Linux 和 Web 世界里，有一个默认的共识：UTF-8 是对 Unicode 最好的编码。尽管相对于其他的文本，它对英语，包括计算机语言（例如 C++，HTML，XML等）提供了更短的表示，在常用的字符集上，它也很少比 UTF-16 编码效率低。</p>
+<p>与此同时，在 Linux 和 Web 世界里，有一个默认的共识：UTF-8 是最好的 Unicode 编码。尽管相对于其他的文本，它对英语，包括计算机语言（例如 C++，HTML，XML等）提供了更短的表示，在常用的字符集上，它也很少比 UTF-16 编码效率低。</p>
 
 <h2 id="facts"><a class="aId" href="#facts">事实</a></h2>
 
 <ul>
-	<li>在 UTF-8 和 UTF-16 编码中，码点都是最多占据 4 个字节。</li>
+	<li>在 UTF-8 和 UTF-16 编码中，码点最多占据 4 个字节。</li>
 
 	<li>UTF-8 是端性中立的。UTF-16 有两种格式：UTF-16LE 和 UTF-16BE（分别对应不同的字节序）。这里我们将他们统称为UTF-16。</li>
 
@@ -51,11 +51,11 @@
 
 	<li>当按字典序排序的时候，UTF-8 和 UTF-32 顺序相同，UTF-16则不同。</li>
 
-	<li>UTF-8 编码处理在英语字母和其他 ASCII 字符上效率更高（每个字符一个字节），而 UTF-16 编码则在处理几个亚洲字符集上效率更好（每个字符两个字节而不是 UTF-8编码中的3个）。在 Web 世界中，英语的 HTML/XML 标签和各种文本混在一起，这使得 UTF-8 成为了最受欢迎的选择。西里尔字母，希伯来语和几个其他流行的 Unicode 字符表块在 UTF-16 和 UTF-8 中都是 2 个字节。</li>
+	<li>UTF-8 编码处理在英语字母和其他 ASCII 字符上效率更高（每个字符一个字节），而 UTF-16 编码则在处理几个亚洲字符集上效率更好（每个字符两个字节而不是 UTF-8编码中的3个）。在 Web 世界中，英语的 HTML/XML 标签和各种文本混在一起，这使得 UTF-8 成为了最受欢迎的选择。西里尔字母，希伯来语和几个其他流行的 Unicode 字符表块 (blocks) 在 UTF-16 和 UTF-8 中都是 2 个字节。</li>
 
-	<li>UTF-16 经常被误用做固定宽度的编码，即使在 Windows 原生应用中：在普通文本编辑控制中（直到 Vista）,删除一个在 UTF-16 中占据 4 个字节的字符，要使用两个退格键。在 Windows 7中，控制台将该字符显示为两个无效字符，无论使用什么字体。</li>
+	<li>UTF-16 经常被误用做固定宽度的编码，即使在 Windows 原生应用中：在普通文本编辑控制中（直到 Vista）,删除一个在 UTF-16 中占 4 个字节的字符，要使用两个退格键。在 Windows 7中，控制台将该类字符显示为两个无效字符，无论使用什么字体。</li>
 
-	<li>许多 Windows 第三方库不支持 Unicode：它们使用窄字符串参数并且将它们传递给 ANSI API。即使文件名也是这样。总的来说，这样是行不通的，因为字符串不可能使用一个 ANSI 页码表示完全（如果它包含来自不同 Unicode 区块的字符）。在 Windows 上解决文件名问题的方案是添加一个 8.3 路径到这个文件上并添加到该类库上。如果这个库需要建立一个不存在的文件，这将不可行。如果路径非常长并且 8.3 格式比 <code>MAX_PATH</code> 长，这也将不可行。如果在操作系统设置中短名生成不可行，这仍将不可行。</li>
+	<li>许多 Windows 第三方库不支持 Unicode：它们使用窄字符串参数并且将它们传递给 ANSI API。有时，甚至连文件名也是这样。总的来说，这样是行不通的，因为字符串不可能使用一个 ANSI 页码表示完全（如果它包含来自不同 Unicode 区块(blocks)的字符）。在 Windows 上解决文件名问题的方案是添加一个 8.3 路径到这个文件上并添加到该类库上。如果这个库需要建立一个不存在的文件，这将不可行。如果路径非常长并且 8.3 格式比 <code>MAX_PATH</code> 长，这也将不可行。如果在操作系统设置中短名生成被禁用，这仍将不可行。</li>
 
 	<li>在 C++ 中，除了使用 UTF-8 编码，没有方法能使 <code>std::exception::what()</code> 返回 Unicode。除了使用 UTF-8，没有别的办法使 Unicode 支持 <code>localeconv</code>。</li>
 
@@ -64,9 +64,9 @@
 
 <h2 id="cookie"><a class="aId" href="#cookie">透明数据(opaque data)争论</a></h2>
 
-<p>让我们回到文件复制工具。在 UNIX 世界中，窄字符串几乎到处被默认为 UTF-8 编码。因此，文件复制工具的作者不需要考虑 Unicode。一旦 ASCII 字符串作为文件名参数测试通过，任何其他语言的文件名都会工作正常，as arguments are treated as  <a href="http://en.wikipedia.org/wiki/Opaque_data_type">cookies</a>. 复制工具的代码<em>一点</em>也不需要改变就可以支持其他语言。<code>fopen()</code> 无缝的接收 Unicode 字符，<code>argv</code> 也同样如此。</p>
+<p>让我们回到文件复制工具。在 UNIX 世界中，窄字符串几乎到处被默认为 UTF-8 编码。因此，文件复制工具的作者不需要考虑 Unicode。一旦 ASCII 字符串作为文件名参数测试通过，任何其他语言的文件名都会工作正常，因为参数被当成了  <a href="http://en.wikipedia.org/wiki/Opaque_data_type">cookies</a>。文件复制工具的代码<em>一点</em>也不需要改变就可以支持其他语言。<code>fopen()</code> 无缝的接收 Unicode 字符，<code>argv</code> 也同样如此。</p>
 
-<p>现在，让我们看一看在基于 UTF-16 架构的微软 Windows 上如何实现。在这上面制作一个能够接受几种不同的 Unicode 块字符文件名参数的文件复制工具需要高深的技巧。首先，这个应用必须编译为 Unicode 感知的。在这个例子中，它不能有带有标准C参数的 <code>main()</code> 函数。它将接受 UTF-16 编码的 argv。为了使一个核心部分使用用窄字符文本的 Windows 应用程序接收 Unicode 字符，它必须深层次的重构并且认真处理每一个字符串变量。</p>
+<p>现在，让我们看一看在基于 UTF-16 架构的微软 Windows 上如何实现这些。在这上面制作一个能够接受几种不同的 Unicode 区块(语言)混合文件名参数的文件复制工具需要高深的技巧。首先，这个应用必须编译为 Unicode 感知的。在这种情况下，它不能有带有标准C参数的 <code>main()</code> 函数。然后它将接受 UTF-16 编码的 argv。为了使一个核心部分使用用窄字符文本的 Windows 应用程序接收 Unicode 字符，它必须深层次的重构并且认真处理每一个字符串变量。</p>
 
 <p>和 MSVC 一同发布的标准库没有很好的支持 Unicode。它直接将窄字符串转发到系统的 ANSI API。没有办法重写这些。改变 <code>std::locale</code> 也无效。在 MSVC 上使用 C++ 的标准特性无法打开一个使用 Unicode 字符名称的文件。打开一个文件的标准方法是：<p>
 
@@ -76,7 +76,7 @@
 
 <p>在 Windows 上，<code>HKLM\SYSTEM\CurrentControlSet\Control\Nls\CodePage\ACP</code> 注册表键值能够使接受非 ASCII 字符，但是这些字符只能来自单个 ANSI 字符页。在 Windows 上，一个未被实现的值 65001 将能够解决 cookie 问题。 如果微软实现对这个 <abbr title="ANSI Code Page">ACP</abbr> 值的支持，这将有助于 UTF-8 编码在 Windows 平台上更广泛的应用。</p>
 
-<p>对于 Windows 程序员和多平台库的开发商，我们会在 <a href="#windows">Windows平台如何处理文本</a> 部分深入探讨我们为了更好支持Unicode 的处理文本字符串和重构程序的方法。</p>
+<p>对于 Windows 程序员和多平台库的开发商，我们会在 <a href="#windows">Windows平台如何处理文本</a> 部分深入探讨处理文本字符串和重构程序的方法，以更好的支持Unicode。</p>
 
 
 <h2 id="characters"><a class="aId" href="#characters">Glyphs, graphemes 和其他 Unicode 类型</a></h2>
@@ -195,7 +195,7 @@
 
 <h2 id="conclusions"><a class="aId" href="#conclusions">我们的结论</a></h2>
 
-<p>UTF-16 的两个方面都是最糟糕的，长度可变和太宽。它因为历史的原因而存在，造成了许多的迷惑。我们希望它的使用进一步减少。</p>
+<p>UTF-16 在两个方面都是最糟糕的，编码长度可变和太占用空间。它由于历史的原因而存在，造成了许多的混乱。我们希望进一步减少它的使用。</p>
 
 <p>可移植性，跨平台协作和简单性这些都比和现有平台的 APIs 相容更重要。所以，最好的方案是在 Windows 上每个地方都使用 UTF-8 窄字符串并且在调用接收字符串的 APIs 前将它们来回转换。当处理接收字符串的系统 APIs 时， <a href="#faq.cvt.perf">性能几乎不与此相关</a>，但是在各个地方使用相同的编码有巨大的好处，<a href="#faq.liberal">我们没有足够的理由不去这么做。</a></p>
 
